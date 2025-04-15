@@ -2,6 +2,7 @@
 This program demonstrates the use of Up, Down, and Up-Down counters in CODESYS using ladder logic. The logic has been split across three rungs, each focusing on different counter functionalities.
 
 🧩**Logic Description**
+
 *_*Rung 1: Up Counter_**
 - **Inputs:** 
   - `cu`: `up_sensor`
