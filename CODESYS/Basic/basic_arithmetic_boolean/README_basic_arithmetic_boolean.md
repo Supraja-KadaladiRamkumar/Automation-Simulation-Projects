@@ -1,4 +1,5 @@
 ⚙️ **Structured Text (ST) Basics: Loops, Conditionals & Expressions**
+
 This Structured Text (ST) code demonstrates various foundational programming constructs used in PLC programming via CODESYS, including arithmetic expressions, **FOR**, **WHILE**, and **REPEAT** loops, as well as **IF-ELSIF** and **CASE** conditional statements. The example focuses on showcasing syntax and structure, and does not return a visible output unless explicitly configured to.
 
 🧩 **Logic Description**
@@ -9,10 +10,9 @@ This Structured Text (ST) code demonstrates various foundational programming con
 - WHILE Loop
 - REPEAT Loop
 
-  🔧 **Tools Used**
-  
-**Platform:** CODESYS Simulation 
-**Language**: Ladder Diagram (LD)
+🔧 **Tools Used**
+- **Platform:** CODESYS Simulation 
+- **Language**: Ladder Diagram (LD)
 
 🛠️ **Tools Needed to Simulate**
 - CODESYS Control Win Systray x64
