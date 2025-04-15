@@ -1,7 +1,7 @@
 **Up-Down Counter Practice (CODESYS)**
 This program demonstrates the use of Up, Down, and Up-Down counters in CODESYS using ladder logic. The logic has been split across three rungs, each focusing on different counter functionalities.
 
-**Logic Description**
+🧩**Logic Description**
 *_*Rung 1: Up Counter_**
 - **Inputs:** 
   - `cu`: `up_sensor`
@@ -25,15 +25,14 @@ This program demonstrates the use of Up, Down, and Up-Down counters in CODESYS u
 - **Output:** 
   - No output connected
   
-  **Tools Used**
-  
+  🔧 **Tools Used**
 - **_Platform:_** CODESYS Simulation
 - **_Language_:** Ladder Diagram (LD)
   
-**Tools Needed to Simulate**
+ 🛠️ **Tools Needed to Simulate**
   
 - CODESYS Control Win Systray x64
 - CODESYS Gateway Systray x64
 
-**Notes**
+📌 **Notes**
 This is a basic-level project created during CODESYS practice to understand different counter types and how they behave during simulation.
