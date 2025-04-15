@@ -25,11 +25,11 @@ This program demonstrates the use of Up, Down, and Up-Down counters in CODESYS u
 - **Output:** 
   - No output connected
   
-  🔧 **Tools Used**
+🔧 **Tools Used**
 - **_Platform:_** CODESYS Simulation
 - **_Language_:** Ladder Diagram (LD)
   
- 🛠️ **Tools Needed to Simulate**
+🛠️ **Tools Needed to Simulate**
   
 - CODESYS Control Win Systray x64
 - CODESYS Gateway Systray x64
