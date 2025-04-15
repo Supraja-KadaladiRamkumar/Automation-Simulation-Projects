@@ -3,7 +3,7 @@ This program demonstrates the use of Up, Down, and Up-Down counters in CODESYS u
 
 🧩**Logic Description**
 
-*_*Rung 1: Up Counter_**
+**_Rung 1: Up Counter_**
 - **Inputs:** 
   - `cu`: `up_sensor`
   - `reset`: `reset_up`
