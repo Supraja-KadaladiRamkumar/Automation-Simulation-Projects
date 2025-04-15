@@ -1,4 +1,4 @@
-🌀 Motor Speed Control with Timer & Limit Logic (LD)
+🌀 **Motor Speed Control with Timer & Limit Logic (LD)**
 
 This project demonstrates a simple motor speed control system implemented in Ladder Logic Diagram (LD) with Function Blocks using timers, comparators, and arithmetic blocks. The motor starts when the input is toggled and accelerates in steps until a user-defined limit is reached. An HMI interface allows user interaction.
 
@@ -18,7 +18,7 @@ _**Rung 5:**_ GE block compares current motor speed with user-defined dial value
 - CODESYS Control Win Systray x64
 - CODESYS Gateway Systray x64
 
-📷 Visual Reference
+📷 **Visual Reference**
 - Screenshots of Simulation (PLC + HMI) are attached.
 
 📌 **Notes**
