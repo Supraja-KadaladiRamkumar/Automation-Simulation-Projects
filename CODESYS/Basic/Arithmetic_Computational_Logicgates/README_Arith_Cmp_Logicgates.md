@@ -23,7 +23,6 @@ This project demonstrates how to use some of the **arithmetic**, **comparison**,
 
 Each function block uses standard EN/ENO logic for execution control, and variables are defined for input/output clarity.
 
-
 🔧 **Tools Used**
 - **Platform**: CODESYS Simulation
 - **Language**: Ladder Diagram (LD)
