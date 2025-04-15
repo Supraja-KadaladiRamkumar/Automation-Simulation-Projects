@@ -36,4 +36,5 @@ This program demonstrates the use of Up, Down, and Up-Down counters in CODESYS u
 - CODESYS Gateway Systray x64
 
 📌 **Notes**
+
 This is a basic-level project created during CODESYS practice to understand different counter types and how they behave during simulation.
