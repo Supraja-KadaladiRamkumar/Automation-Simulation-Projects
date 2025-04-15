@@ -26,7 +26,7 @@ Each function block uses standard EN/ENO logic for execution control, and variab
 
 🔧 **Tools Used**
 - **Platform**: CODESYS Simulation
--**Language**: Ladder Diagram (LD)
+- **Language**: Ladder Diagram (LD)
 
 🛠️ **Tools Needed to Simulate**
 - CODESYS Control Win Systray x64
