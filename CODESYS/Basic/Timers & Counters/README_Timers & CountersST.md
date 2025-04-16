@@ -49,7 +49,7 @@ _**Language:**_ Structured Text (ST)
 - This project is useful for simulating control systems that involve timed sequences and inventory tracking.
 - Counters can be adapted for batch processing, and timers help ensure delayed or pulse-based activation of outputs.
 - The Count Up/Down block is particularly useful in systems with inflow and outflow tracking.
-- Code is provided in 'basic st.txt'.
+- Code is provided in 'Timers & Counters ST.txt'.
 - No output is shown, as this is a syntax and logic practice file.
 
 
