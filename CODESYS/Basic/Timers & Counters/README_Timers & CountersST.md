@@ -36,6 +36,7 @@ This project demonstrates the use of various Timers and Counters to control diff
 🔧 **Tools Used**
 
 _**Platform:**_ CODESYS Simulation
+
 _**Language:**_ Structured Text (ST)
 
 🛠️ **Tools Needed to Simulate**
