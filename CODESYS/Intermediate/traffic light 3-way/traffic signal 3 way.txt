@@ -1,0 +1,78 @@
+traffic_elapsed_time:= traffic_timer.ET;
+sw_left_green:= start AND NOT stop AND NOT pedestrian_cross AND NOT sw_left_red;
+wn_left_green:= start AND NOT stop AND NOT pedestrian_cross AND NOT wn_left_red;
+ns_straight_green:= start AND NOT (ws_right_yellow OR ws_right_green) AND NOT (ns_straight_yellow OR ns_straight_red) AND NOT pedestrian_cross;
+sn_straight_green:= start AND NOT (nw_right_yellow OR nw_right_green)AND NOT (ws_right_yellow OR ws_right_green) AND NOT pedestrian_cross AND NOT (sn_straight_yellow OR sn_straight_red);
+ws_right_red:= start AND NOT ws_right_yellow AND NOT ws_right_green;
+nw_right_red:= start AND NOT (nw_right_yellow OR nw_right_green);
+traffic_timer (in:= (start AND NOT stop AND NOT traffic_timer.Q AND NOT pedestrian_cross), pt:= T#20S);
+
+ // North-South straight Green Phase
+IF ns_straight_green AND sn_straight_green AND traffic_elapsed_time >= T#15S THEN
+	stage:= 1;
+	sn_straight_yellow:= TRUE;
+	sn_straight_green:= FALSE;
+END_IF
+
+// North-west green Phase
+IF sn_straight_yellow AND traffic_elapsed_time > T#0S AND traffic_elapsed_time < T#5S AND stage = 1 THEN
+	sn_straight_yellow:= FALSE;
+	sn_straight_red:= TRUE;
+	nw_right_green:= TRUE;
+	traffic_elapsed_time:= T#0S;
+	stage:= 2;
+END_IF
+
+// North-west and straight yellow Phase
+IF nw_right_green AND traffic_elapsed_time >= T#15S AND stage = 2 THEN
+	ns_straight_green:= FALSE;
+	nw_right_green:= FALSE;
+	nw_right_yellow:= TRUE;
+	ns_straight_yellow:= TRUE;
+END_IF
+
+// pedestrian crossing phase
+IF nw_right_yellow AND ns_straight_yellow AND traffic_elapsed_time > T#0S AND traffic_elapsed_time < T#5S AND stage = 2 THEN
+	nw_right_yellow:= FALSE;
+	ns_straight_yellow:= FALSE;
+	ns_straight_red:= TRUE;
+	nw_right_red:= TRUE;
+	stage:= 3;
+	traffic_elapsed_time:= T#0S;
+	pedestrian_elapsed_time:= T#0S;
+END_IF
+IF ns_straight_red AND nw_right_red AND stage = 3 THEN
+	pedestrian_cross:= TRUE;
+	wn_left_red:= TRUE;
+	sw_left_red:= TRUE;
+	pedestrian_timer (in:= pedestrian_cross AND NOT stop AND NOT pedestrian_timer.Q, pt:= T#10S);
+END_IF
+
+// west south right green Phase
+IF pedestrian_timer.Q AND pedestrian_cross AND stage = 3 THEN
+	wn_left_red:= FALSE;
+	sw_left_red:= FALSE;
+	pedestrian_elapsed_time:= T#0S;
+	stage:= 4;
+	ws_right_green:= TRUE;
+	pedestrian_cross:= FALSE;
+END_IF
+
+// west south right yellow Phase
+IF ws_right_green AND traffic_elapsed_time >= T#15S AND stage = 4 THEN
+	ws_right_yellow:= TRUE;
+	ws_right_green:= FALSE;
+END_IF
+
+//reset phase
+IF ws_right_yellow AND traffic_elapsed_time > T#0S AND traffic_elapsed_time < T#5S AND stage = 4 THEN
+	sn_straight_green := TRUE;
+    ns_straight_green := TRUE;
+	ws_right_yellow:= FALSE;
+	ws_right_red:= TRUE;
+    ns_straight_red := FALSE;
+    sn_straight_red := FALSE;
+	traffic_elapsed_time:= T#0S;
+	pedestrian_elapsed_time:= T#0S;
+	stage:= 1;
+END_IF
