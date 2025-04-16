@@ -1,0 +1,20 @@
+out:= 0;
+IF n = 5 THEN
+	out:= out + 1;
+ELSIF n = 0 THEN
+	JMP jump;
+ELSIF n = 1 THEN
+	out:= out + 0;
+	RETURN;
+END_IF;
+jump: out:= out + 2;
+
+func(num1:= x, num2:= y);
+sub_res:= func.sub_result;
+div_res:= func.div_result;
+
+
+Functional block:
+
+div_result:= num1/num2;
+sub_result:= num1-num2;
