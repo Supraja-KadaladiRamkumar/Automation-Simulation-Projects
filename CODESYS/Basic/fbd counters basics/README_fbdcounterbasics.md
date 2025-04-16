@@ -6,26 +6,27 @@ A basic-level project implemented using Function Block Diagram (FBD) logic to co
 
 _**Network 1:**_ **Up Counter**
 
-- **Inputs:**
+  **Inputs:**
   
- _**cu:**_ **(Count Up)**:
+   _**cu:**_ **(Count Up)**:
  
-   AND Block containing the following conditions:
+     AND Block containing the following conditions:
+  
+    - _Input 1:_ Simulates a sensor detecting an object
+    - _Input 2:_ Done bit from the counter (used to stop counting once the target is reached)
 
-  - _Input 1:_ Simulates a sensor detecting an object
-  - _Input 2:_ Done bit from the counter (used to stop counting once the target is reached)
-
- _**Reset:**_
+ **Reset:**
 
   - Reset push button to reset the counter to zero
   
-- **Output:**
+**Output:**
   
   - A LED turns ON when the counter reaches its preset value
 
 🔧 **Tools Used**
 
 _**Platform:**_ CODESYS Simulation
+
 _**Language:**_ Ladder Diagram (LD)
 
 🛠️ **Tools Needed to Simulate**
