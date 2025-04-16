@@ -14,13 +14,13 @@ _**Traffic Lights Covered:**_
 - South-West Free Left Turn
 - Pedestrian Crossing
 
-- _**Timers Used:**_
+_**Timers Used:**_
 
 - traffic_timer: Controls the duration for each traffic phase (20 seconds).
 - pedestrian_timer: Manages the pedestrian crossing time (10 seconds).
 - The timer resets after every transition to manage the next timed phase correctly.
 
-- _**Main Signals:**_
+_**Main Signals:**_
   
 - Green, yellow, and red lights for each direction.
 - Pedestrian crossing signal controlled based on traffic states.
@@ -33,7 +33,7 @@ Both NS and SN directions are given green if no pedestrian request or conflictin
 2. _Phase 2 – NW Right Green_
 After NS/SN yellow phase, NW gets a green for right turn.
 
-_3. _Phase 3 – Pedestrian Crossing_
+3. _Phase 3 – Pedestrian Crossing_
 After NW right turn, all signals turn red and pedestrian crossing is enabled for 10 seconds.
 
 4. _Phase 4 – WS Right Green_
