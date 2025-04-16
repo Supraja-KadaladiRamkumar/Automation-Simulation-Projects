@@ -12,8 +12,8 @@ _**Network 1:**_ **Up Counter**
  
      AND Block containing the following conditions:
   
-    - _Input 1:_ Simulates a sensor detecting an object
-    - _Input 2:_ Done bit from the counter (used to stop counting once the target is reached)
+    - Input 1: Simulates a sensor detecting an object
+    - Input 2: Done bit from the counter (used to stop counting once the target is reached)
 
  **Reset:**
 
