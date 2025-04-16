@@ -1,0 +1,15 @@
+// simple led on & off
+led:= on AND NOT off;
+light:= (on OR light) AND NOT off;
+
+//  led set & reset coil
+new_light S= on;
+new_light R= off;
+new_light2 R= on;
+new_light2 S= off;
+
+//SR & RS blocks
+set_reset(set1:= on, reset := off);
+led2:= set_reset.Q1;
+reset_set(set:= on, reset1 := off);
+led3:= reset_set.Q1;
