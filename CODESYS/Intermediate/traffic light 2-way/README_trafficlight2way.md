@@ -31,7 +31,7 @@ The simulation includes a user-friendly visual layout featuring:
 
 _**Platform:**_ CODESYS Simulation
 
-_**Language:**_ Ladder Diagram (LD)
+_**Language:**_ Structured Text (ST)
 
 🛠️ **Tools Needed to Simulate**
 - CODESYS Control Win Systray x64
