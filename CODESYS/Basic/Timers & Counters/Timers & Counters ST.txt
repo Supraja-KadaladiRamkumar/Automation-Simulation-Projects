@@ -1,0 +1,22 @@
+pulse_timer(IN:= start_pulse, PT:= T#5S);
+elapsed_pulse := pulse_timer.ET;
+out:= pulse_timer.Q;
+
+on_timer(IN:= start_on, PT:= T#5S);
+motor:= on_timer.Q;
+
+off_timer( IN:= start_off, PT:= T#5S);
+fan:= off_timer.Q;
+
+count_up(CU:= inp_up, RESET:= reset_inp, PV:= 3);
+belt1:= count_up.Q;
+
+count_down(CD:= inp_down, LOAD:= load_inp, PV:= 3);
+belt2:= count_down.Q;
+
+count_up_down(CU:= inp_up, CD:= inp_down, RESET:= reset_inp, LOAD:= load_inp, PV:= 3);
+
+
+
+
+
