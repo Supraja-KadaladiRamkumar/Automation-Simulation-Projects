@@ -30,6 +30,7 @@ The simulation includes a user-friendly visual layout featuring:
 🔧 **Tools Used**
 
 _**Platform:**_ CODESYS Simulation
+
 _**Language:**_ Ladder Diagram (LD)
 
 🛠️ **Tools Needed to Simulate**
