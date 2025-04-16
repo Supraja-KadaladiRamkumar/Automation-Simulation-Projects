@@ -1,0 +1,25 @@
+temp_sensor:= start AND NOT stop AND NOT alarm;
+elapsed_time:= delay_timer.ET;
+IF temp_sensor THEN
+	delay_timer( in:= TRUE, pt:= delay_time);
+	IF delay_timer.Q THEN
+		delay_timer(in:= FALSE);
+		temp_reading:= temp_reading + 1;
+		deviation := temp_reading - SP;
+		IF deviation < 0 THEN
+    		pump_speed := 30; // Baseline
+		ELSIF deviation < 100 THEN
+    		pump_speed := 30 + (deviation * 0.7); // Scaled increment for moderate deviations
+		ELSIF deviation >= 100 THEN
+   			pump_speed := 80 + (deviation * 0.2); // Larger deviations mapped to higher speeds
+    		IF pump_speed > 100 THEN
+        		pump_speed := 100; // Cap at max speed
+			END_IF
+		END_IF
+	END_IF
+END_IF
+				
+IF temp_reading >= max_limit THEN
+    pump_speed := 100; // Max speed
+    alarm := TRUE;
+END_IF
