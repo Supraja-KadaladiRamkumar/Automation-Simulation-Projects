@@ -5,9 +5,13 @@ This project demonstrates a simple motor speed control system implemented in Lad
 🧩 **Logic Description**
 
 _**Rung 1:**_ Input button sets the motor (Set coil).
+
 _**Rung 2:**_ Stop button resets the motor (Reset coil).
+
 _**Rung 3:**_ Motor ON & NC of Timer's Done bit triggers a TON timer (preset to 20s).
+
 _**Rung 4:**_ If motor is running, Timer is done, and Break is OFF → an ADD block increments motor speed by 40.
+
 _**Rung 5:**_ GE block compares current motor speed with user-defined dial value. When maximum value set is reached, Break is triggered. This way the motor runs at a constant speed from this point.
 
 🔧 **Tools Used**
