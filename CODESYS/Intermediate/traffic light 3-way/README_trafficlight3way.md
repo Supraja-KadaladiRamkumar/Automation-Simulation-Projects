@@ -29,23 +29,23 @@ _**Main Signals:**_
 
 1. _Phase 1 – NS/SN Straight Green_
    
-Both NS and SN directions are given green if no pedestrian request or conflicting traffic.
+   Both NS and SN directions are given green if no pedestrian request or conflicting traffic.
 
 2. _Phase 2 – NW Right Green_
    
-After NS/SN yellow phase, NW gets a green for right turn.
+   After NS/SN yellow phase, NW gets a green for right turn.
 
 3. _Phase 3 – Pedestrian Crossing_
    
-After NW right turn, all signals turn red and pedestrian crossing is enabled for 10 seconds.
+   After NW right turn, all signals turn red and pedestrian crossing is enabled for 10 seconds.
 
 4. _Phase 4 – WS Right Green_
    
-Once pedestrian phase ends, WS gets a right turn green.
+   Once pedestrian phase ends, WS gets a right turn green.
 
 5. _Reset Phase – Back to NS/SN Straight Green_
    
-After WS yellow, the cycle resets to NS and SN straight green.
+   After WS yellow, the cycle resets to NS and SN straight green.
 
 6. Except during the pedestrian cross time period, the green light of 2 left turns remain on throughout.
 
