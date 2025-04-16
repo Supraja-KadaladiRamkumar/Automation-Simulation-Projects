@@ -13,7 +13,7 @@ _**Key Behaviors:**_
 - After 5 seconds, EW Yellow ends, and NS Red is cleared — resetting the cycle.
 - The cycle continues as long as start is active and stop is not pressed.
 
-_**Timer Logic::**_
+_**Timer Logic:**_
 
 - A TON timer (traffic_timer) controls phase timing.
 - elapsed_time := traffic_timer.ET tracks time progression in the current phase.
