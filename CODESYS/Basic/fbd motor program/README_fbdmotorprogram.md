@@ -3,6 +3,7 @@
 This project demonstrates how multiple motors can be operated using latching techniques implemented in Function Block Diagram (FBD) logic. It uses timers, comparators, output latch and both Set-Reset (SR) and Reset-Set (RS) blocks. Each motor behaves based on different input-triggered conditions, simulating various real-world latching scenarios.
 
 🧩 **Logic Description**
+
 _**Network 1:**_ 
 
 - **Inputs:** 
