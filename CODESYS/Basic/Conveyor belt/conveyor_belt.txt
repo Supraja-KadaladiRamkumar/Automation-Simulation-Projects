@@ -1,0 +1,9 @@
+forward_conveyor_belt:= (start OR forward_conveyor_belt OR object_count.Q) AND NOT reverse_conveyor_belt AND NOT stop AND NOT object_sensor AND NOT defect_sensor AND NOT box_sensor;
+object_count(CU:= object_sensor, RESET:= reset_count, PV:= initial_count - pieces_not_removed);
+box_count:= object_count.CV;
+reset_count:= defect_sensor OR box_sensor;
+IF defect_sensor= TRUE THEN
+	pieces_not_removed:= initial_count - pieces_removed;
+	reverse_conveyor_belt:= (defect_sensor OR reverse_conveyor_belt) AND NOT object_sensor AND NOT forward_conveyor_belt;
+END_IF
+
