@@ -30,4 +30,6 @@ This basic project demonstrates the use of an ON-delay timer to control a heatin
 - This simple logic introduces how ON-delay timers work in ST.
 - It's useful for controlling time-based operations, especially in processes where a delay is required before switching on an output.
 - Can be extended to more complex heating or motor control applications.
+- Code is provided in 'Heating problem st.txt'
+- No output is shown, as this is a syntax and logic practice file
 
