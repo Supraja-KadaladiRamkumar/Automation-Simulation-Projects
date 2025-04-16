@@ -26,6 +26,7 @@ _**Rung 5:**_ GE block compares current motor speed with user-defined dial value
 - Screenshots of Simulation (PLC + HMI) are attached.
 
 📌 **Notes**
+
 HMI includes:
 - Toggle buttons for Input and Stop
 - LED indicating Motor Running
