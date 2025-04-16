@@ -12,7 +12,7 @@ This Structured Text (ST) code demonstrates various foundational programming con
 
 🔧 **Tools Used**
 - **Platform:** CODESYS Simulation 
-- **Language**: Ladder Diagram (LD)
+- **Language**: Structured Text (ST)
 
 🛠️ **Tools Needed to Simulate**
 - CODESYS Control Win Systray x64
