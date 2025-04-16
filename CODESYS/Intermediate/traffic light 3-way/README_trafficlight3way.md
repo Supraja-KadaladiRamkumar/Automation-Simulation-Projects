@@ -62,7 +62,7 @@ _**Language:**_ Ladder Diagram (LD)
   
 📷 **Visual Reference**
 
-Screenshots of the HMI are attached, including the visualization layout before simulation and the simulation outputs for all 3 traffic light cycles.
+Screenshots of the HMI are attached, including the visualization layout before simulation and the simulation outputs for a few traffic light cycles.
 
 📌 **Notes**
 
