@@ -1,0 +1,3 @@
+temp_sensor:= start AND NOT stop;
+on_timer(IN:= temp_sensor, PT:= T#5S);
+heating_element:= on_timer.Q;
