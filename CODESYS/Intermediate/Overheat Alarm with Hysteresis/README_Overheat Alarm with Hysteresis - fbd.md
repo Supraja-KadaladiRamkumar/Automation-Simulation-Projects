@@ -29,7 +29,7 @@ The system monitors an analog temperature sensor and compares its value to high 
 
 _**Platform:**_ CODESYS Simulation
 
-_**Language:**_ Ladder Diagram (LD)
+_**Language:**_ Function Block Diagram (FBD)
 
 🛠️ **Tools Needed to Simulate**
 
