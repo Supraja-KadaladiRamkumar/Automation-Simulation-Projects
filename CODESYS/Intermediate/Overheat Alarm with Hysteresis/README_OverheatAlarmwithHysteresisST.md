@@ -1,4 +1,4 @@
-🌡️ **Temperature Monitoring with Hysteresis (ST)**
+🌡️ **Temperature Monitoring with Hysteresis/ Overheat Alarm with Hysteresis (ST)**
 
 This Structured Text (ST) program implements hysteresis logic for temperature control. When the simulated temperature exceeds the high threshold plus hysteresis, an alarm is triggered. Once the temperature falls below the low threshold minus hysteresis, the alarm is reset. This avoids frequent toggling around threshold values and simulates realistic behavior for temperature-based systems.
 
