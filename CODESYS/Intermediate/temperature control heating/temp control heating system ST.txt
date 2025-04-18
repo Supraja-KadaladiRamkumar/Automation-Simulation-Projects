@@ -1,0 +1,22 @@
+temp_sensor:= start AND NOT emer_stop AND NOT reset;
+IF temp_sensor THEN
+	delay_timer(IN := TRUE, PT := delay_time);
+	WHILE temp_reading < max_limit AND delay_timer.Q DO
+		temp_reading:= temp_reading + 1;
+		delay_timer(IN := FALSE); 
+		IF temp_reading > set_point + hysteresis THEN
+			heater:= FALSE;
+		ELSIF temp_reading <= set_point + hysteresis THEN
+			heater:= TRUE;
+		END_IF
+	END_WHILE
+	IF temp_reading >= max_limit THEN
+		alarm:= TRUE;
+		emer_stop:= TRUE;
+		heater:= FALSE;
+	END_IF
+END_IF
+IF reset THEN
+	alarm:= FALSE;
+	emer_stop:= FALSE;
+END_IF
