@@ -1,0 +1,24 @@
+temp_sensor:= start AND NOT stop;
+elapsed_time1 := delay_timer.ET;
+elapsed_time2 := delay_timer2.ET;
+IF temp_sensor THEN
+	delay_timer(in:= TRUE, pt:= T#1S);
+	WHILE delay_timer.Q AND NOT alarm DO
+		temp_reading:= temp_reading + 1;
+		IF temp_reading >= high_lim + hysteresis THEN
+			alarm:= TRUE;
+		END_IF
+	delay_timer(in:= FALSE);
+	END_WHILE
+	
+	IF alarm THEN
+		delay_timer2(in:= TRUE, pt:= T#1S);
+		WHILE alarm AND delay_timer2.Q DO
+			temp_reading:= temp_reading - 1;
+			IF temp_reading < low_lim - hysteresis THEN
+				alarm:= FALSE;
+			END_IF
+		delay_timer2(in:= FALSE);
+		END_WHILE
+	END_IF
+END_IF
