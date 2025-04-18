@@ -1,4 +1,4 @@
-🌡 **Temperature Monitoring with Hysteresis**
+🌡 **Temperature Monitoring with Hysteresis (FBD)**
 
 This project implements a temperature threshold control system using Function Block Diagram (FBD) logic in CODESYS. The logic uses hysteresis to avoid frequent toggling near threshold values, an alarm to indicate excessive heat and includes a simple timer to simulate a gradual temperature rise.
 
@@ -28,6 +28,7 @@ The system monitors an analog temperature sensor and compares its value to high 
 🔧 **Tools Used**
 
 _**Platform:**_ CODESYS Simulation
+
 _**Language:**_ Ladder Diagram (LD)
 
 🛠️ **Tools Needed to Simulate**
