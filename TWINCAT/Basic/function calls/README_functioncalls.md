@@ -6,25 +6,26 @@ This is a basic TwinCAT 3.1 project that demonstrates how to modularize logic us
 
  - _**Main Program**_
    
-  - Calls two child POUs: `fbd_call()` and `ladder_logic_call()`.
-  - `start` and `stop` inputs are passed to the LD POU.
-  - Output `light` is returned from LD and assigned in the main program.
+   - Calls two child POUs: `fbd_call()` and `ladder_logic_call()`.
+   - `start` and `stop` inputs are passed to the LD POU.
+   - Output `light` is returned from LD and assigned in the main program.
 
 - _**Ladder Logic (LD)**_
-  - Implements a classic Set/Reset latch:
-      - **Set** when `start` is pressed.
-      - **Reset** when `stop` is pressed.
-  - The `light` stays ON until `stop` is activated again.
+   - Implements a classic Set/Reset latch:
+       - **Set** when `start` is pressed.
+       - **Reset** when `stop` is pressed.
+   - The `light` stays ON until `stop` is activated again.
  
 - _**Function Block Diagram (FBD)**_
-  - Achieves the same latch logic differently:
-  - Uses an AND gate with inputs: `start`, latched `light`, and `NOT stop`.
-  - Output goes to `light`, producing a latched effect.
-  - Great for understanding logic flow using gates.
+   - Achieves the same latch logic differently:
+   - Uses an AND gate with inputs: `start`, latched `light`, and `NOT stop`.
+   - Output goes to `light`, producing a latched effect.
+   - Great for understanding logic flow using gates.
  
 🔧 **Tools Used**
 
 _**Platform:**_ Beckhoff TwinCAT 3.1
+
 _**Language:**_ POUs written in LD and FBD. Main program in Structured Text
 
 🛠️ **Tools Needed to Simulate**
@@ -34,5 +35,5 @@ _**Language:**_ POUs written in LD and FBD. Main program in Structured Text
 
 📌 **Notes**
 
-- - A simple, clean example of how LD and FBD can be used to model the same logic.
+- A simple, clean example of how LD and FBD can be used to model the same logic.
 - Demonstrates the power of modular POUs in TwinCAT.
