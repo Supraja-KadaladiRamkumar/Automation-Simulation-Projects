@@ -1,4 +1,4 @@
-⚙️ **Motor Control – Structured Text**
+⚙️ **Motor Sequential Control – Structured Text**
 
 This program simulates a multi-stage motor sequence where three motors run one after another based on a timer cycle using Structured Text (ST) in TwinCAT.
 
