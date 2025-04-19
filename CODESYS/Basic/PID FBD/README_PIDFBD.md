@@ -31,8 +31,8 @@ This project demonstrates the use of a PID (Proportional-Integral-Derivative) co
 🔧 **Tools Used**
 
 - _**Platform:**_ CODESYS Simulation
-- _**Language:**_ Structured Text (ST)
-
+- _**Language:**_ Function Block Diagram (FBD)
+  
 🛠️ **Tools Needed to Simulate**
 
 - CODESYS Control Win SysTray (x64)
