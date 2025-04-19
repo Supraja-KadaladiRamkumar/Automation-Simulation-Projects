@@ -32,6 +32,17 @@ This project simulates a simple conveyor control system using Structured Text an
 - _**Potentiometer Dial:**_ Adjusts the conveyor speed (slider_speed).
 - _**Box Movement:**_ A symbolic object on the screen moves to the right based on the value of visual_conv from the logic. This is bound to the X-position of the box.
 
+🔧 **Tools Used**
+
+_**Platform:**_ Beckhoff TwinCAT 3.1
+
+_**Language:**_ POUs written in LD and FBD. Main program in Structured Text
+
+🛠️ **Tools Needed to Simulate**
+
+- TwinCAT XAE (Extended Automation Engineering) environment
+- Weekly runtime license (valid for 7 days, can be renewed)
+
 📌 **Notes**
 - The visual elements in this version of TwinCAT 3 are quite limited, so the appearance of the conveyor and boxes is rudimentary.
 - Despite the basic visuals, the program demonstrates a working model of real-time speed control, position tracking, and motion cycling — ideal for training or testing logic design.
