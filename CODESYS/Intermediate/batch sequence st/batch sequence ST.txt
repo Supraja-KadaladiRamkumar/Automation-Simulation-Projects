@@ -1,0 +1,56 @@
+//heating
+heating_element:= start AND NOT stop;
+on_timer(IN:= heating_element, pt:= T#10S);
+temp_sensor:= on_timer.Q AND NOT break AND NOT heating_complete;
+delay_timer(IN:= TRUE, pt:= T#5S);
+IF temp_sensor AND delay_timer.Q THEN
+	REPEAT
+		temp_reading := temp_reading + 0.5;
+	UNTIL
+		temp_reading > set_point
+	END_REPEAT
+	IF temp_reading >0 AND temp_reading >= set_point THEN
+		break:= TRUE;
+		alarm:= TRUE;
+	END_IF
+END_IF
+heating_complete_timer(IN:= break AND NOT mixing_timer.Q, PT:= T#10S);
+
+//mixing
+IF heating_complete_timer.q AND NOT mixing_complete THEN
+	heating_complete:= TRUE;
+    mixer := TRUE;
+	alarm:= FALSE;
+	mixing_timer(IN := mixer, PT := T#10S);
+	IF mixing_timer.Q THEN
+		mixing_complete := TRUE;
+		heating_complete:= FALSE;
+	END_IF
+END_IF
+
+// cooling
+IF mixing_timer.Q THEN
+	mixer:= FALSE;
+	cooling_temp:= MOVE(temp_reading);
+	cooling_timer (IN:= mixing_timer.Q, PT:= T#10S);
+	IF cooling_timer.ET >= T#5S THEN
+		mixing_complete:= FALSE;
+	END_IF
+END_IF
+IF cooling_timer.q THEN
+	fan:= cooling_timer.Q AND NOT cooling_complete;
+	REPEAT
+		cooling_temp := cooling_temp - 0.25;
+	UNTIL
+		cooling_temp <= cooling_SP
+	END_REPEAT
+	IF cooling_temp <= cooling_SP THEN
+		cooling_complete:= TRUE;
+	END_IF
+END_IF
+cool_reset_timer(IN := cooling_complete, PT := T#10S);  // give it a delay
+IF cool_reset_timer.Q THEN
+	cooling_complete := FALSE;
+END_IF
+
+	
