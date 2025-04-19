@@ -6,25 +6,25 @@ This project simulates a simple conveyor control system using Structured Text an
 
 ⚙️ **Step-by-Step Logic Flow:**
 
-1. _**Start/Stop Control**_
-  - The conveyor is activated using a logical AND condition between start and NOT stop.
+  1. _**Start/Stop Control**_
+    - The conveyor is activated using a logical AND condition between start and NOT stop.
     
-2. _**Enable Calculation**_
-  - A TON (On-delay Timer) introduces a delay before enabling the position calculation.
-  - The timer is triggered by both the conveyor being active and the timer’s own output being LOW.
+  2. _**Enable Calculation**_
+    - A TON (On-delay Timer) introduces a delay before enabling the position calculation.
+    - The timer is triggered by both the conveyor being active and the timer’s own output being LOW.
 
-3. _**Speed Calculation**_
-  - Once calc_enable is TRUE, the speed is calculated from the slider_speed (potentiometer input), multiplied by 10, then divided by 100 to normalize.
+  3. _**Speed Calculation**_
+    - Once calc_enable is TRUE, the speed is calculated from the slider_speed (potentiometer input), multiplied by 10, then divided by 100 to normalize.
 
-4. _**Position Update**_
-  - The calculated value is added to the current conveyor position to create a new temporary position.
-  - This is converted to an integer value for display purposes.
+  4. _**Position Update**_
+    - The calculated value is added to the current conveyor position to create a new temporary position.
+    - This is converted to an integer value for display purposes.
 
-5. _**Looping Motion**_
-  - The new conveyor position is wrapped using a MOD operation to cycle within bounds defined by (max_lim + 1).
+  5. _**Looping Motion**_
+    - The new conveyor position is wrapped using a MOD operation to cycle within bounds defined by (max_lim + 1).
 
-6. _**Position Move**_
-  - Finally, the new position is moved back into conveyor_pos, completing the loop.
+  6. _**Position Move**_
+    - Finally, the new position is moved back into conveyor_pos, completing the loop.
 
 🖥️ **HMI Interface**
 
