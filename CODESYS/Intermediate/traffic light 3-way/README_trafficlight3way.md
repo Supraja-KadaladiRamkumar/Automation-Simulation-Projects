@@ -69,3 +69,4 @@ Screenshots of the HMI are attached, including the visualization layout before s
 - A single pedestrian crossing LED is included in this 3-way logic. It activates during the pedestrian phase and applies to all directions at once.
 - In the planned 4-way version, pedestrian functionality will be enhanced with two dedicated pedestrian halt zones for more accurate signaling.
 - The pedestrian crossing is included in the logic and shown in the HMI, but not with individual signal controls or button inputs per crosswalk.
+- Code is provided in 'traffic light 3 way.txt'.
