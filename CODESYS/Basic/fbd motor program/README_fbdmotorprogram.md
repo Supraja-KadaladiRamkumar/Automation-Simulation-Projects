@@ -45,6 +45,6 @@ _**Network 3:**_
 - CODESYS Control Win Systray x64
 - CODESYS Gateway Systray x64
   
- 📌 Notes
+ 📌 **Notes**
 
 This is a beginner-level project created during CODESYS practice to explore different latching methods and understand how SR, RS, and basic memory blocks behave under simulation.
