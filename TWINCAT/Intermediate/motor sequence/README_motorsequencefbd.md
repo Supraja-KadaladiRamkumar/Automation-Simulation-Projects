@@ -70,7 +70,7 @@ These checks are implemented directly using stacked `AND` and `GE/LT` comparison
 
 _**Platform:**_ Beckhoff TwinCAT 3.1
 
-_**Language:**_ Ladder Diagram (LD)
+_**Language:**_ Functional Block Diagram (FBD)
 
 🛠️ **Tools Needed to Simulate**
 
