@@ -1,6 +1,6 @@
 📦 **HMI Conveyor Control**
 
-This project simulates a simple conveyor control system using Structured Text and Function Block Diagram (FBD) in TwinCAT 3. The setup includes basic start/stop control, a speed adjustment via potentiometer, and a visual representation of a moving object (box) on the HMI.
+This project simulates a simple conveyor control system using Function Block Diagram (FBD) in TwinCAT 3. The setup includes basic start/stop control, a speed adjustment via potentiometer, and a visual representation of a moving object (box) on the HMI.
 
 🧩 **Logic Description**
 
@@ -36,7 +36,7 @@ This project simulates a simple conveyor control system using Structured Text an
 
 _**Platform:**_ Beckhoff TwinCAT 3.1
 
-_**Language:**_ POUs written in LD and FBD. Main program in Structured Text
+_**Language:**_ Function Block Diagram (FBD)
 
 🛠️ **Tools Needed to Simulate**
 
