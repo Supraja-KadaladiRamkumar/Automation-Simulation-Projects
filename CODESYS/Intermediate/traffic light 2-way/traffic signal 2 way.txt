@@ -1,0 +1,28 @@
+elapsed_time:= traffic_timer.ET;
+NorthSouthGreen:= start AND NOT NorthSouthRed AND NOT NorthSouthYellow;
+EastWestRed:= start AND NOT EastWestGreen AND NOT EastWestYellow;
+traffic_timer (in:= (start AND NOT stop AND NOT traffic_timer.Q), pt:= T#20S);
+    // North-South Green Phase
+IF NorthSouthGreen AND elapsed_time >= T#15S THEN
+	NorthSouthYellow:= TRUE;
+	NorthSouthGreen:= FALSE;
+END_IF
+ // North-South Yellow Phase
+IF NorthSouthYellow AND elapsed_time > T#0S AND elapsed_time < T#5S THEN
+	NorthSouthYellow:= FALSE;
+	NorthSouthRed:= TRUE;
+	EastWestGreen:= TRUE;
+	elapsed_time:= T#0S;    
+END_IF
+// East-West Green Phase
+IF EastWestGreen AND elapsed_time >= T#15S THEN
+	EastWestYellow:= TRUE;
+	EastWestGreen:= FALSE;
+END_IF
+ // East-West Yellow Phase
+IF EastWestYellow AND elapsed_time > T#0S AND elapsed_time < T#5S THEN
+	EastWestYellow:= FALSE;
+	NorthSouthRed:= FALSE;
+	elapsed_time:= T#0S;
+END_IF
+	
