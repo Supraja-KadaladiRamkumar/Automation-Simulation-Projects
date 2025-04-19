@@ -1,4 +1,4 @@
- # ⚙️ Arithmetic, Comparison & Logic Operators (Ladder Logic with Function Blocks)
+⚙️ **Arithmetic, Comparison & Logic Operators (Ladder Logic with Function Blocks)**
 This project demonstrates how to use some of the **arithmetic**, **comparison**, and **logic** operators in **Ladder Logic (LD)** using **function blocks** in CODESYS.
 
 🧩 **Logic Description** 
