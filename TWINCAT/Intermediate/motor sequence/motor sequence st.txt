@@ -1,0 +1,97 @@
+motor_et := motor_timer.ET + offset_time;
+motor_timer(in:= start AND NOT stop AND NOT motor_timer.Q AND NOT reset_all AND NOT motor1_fault AND NOT motor2_fault AND NOT motor3_fault, pt:= T#35S);
+motor1:= NOT motor2 AND NOT motor3 AND NOT motor1_fault AND NOT motor2_fault AND NOT motor3_fault AND NOT stop;
+motor2:= NOT motor1 AND NOT motor3 AND NOT motor2_fault AND NOT motor3_fault AND NOT motor1_fault AND NOT stop;
+motor3:= NOT motor2 AND NOT motor1 AND NOT motor1_fault AND NOT motor2_fault AND NOT motor3_fault AND NOT stop;
+
+IF motor_et < T#5S THEN
+    motor1 := FALSE;
+    motor1_led := FALSE;
+    motor2 := FALSE;
+    motor2_led := FALSE;
+    motor3 := FALSE;
+    motor3_led := FALSE;
+ELSIF motor_et >= T#5S AND motor_et < T#15S THEN
+	motor1:= TRUE;
+	motor1_led:= TRUE;
+ELSIF motor_et >= T#15S AND motor_et < T#25S THEN
+	reset_motor1:= FALSE;
+	motor1:= FALSE;
+	motor1_led:= FALSE;
+	motor2:= TRUE;
+	motor2_led:= TRUE;
+ELSIF motor_et >= T#25S AND motor_et < T#35S THEN
+	reset_motor2:= FALSE;
+	motor2:= FALSE;
+	motor2_led:= FALSE;
+	motor3:= TRUE;
+	motor3_led:= TRUE;
+ELSIF motor_et >= T#35S THEN
+	reset_motor3:= FALSE;
+	motor3:= FALSE;
+	motor3_led:= FALSE;
+	motor2:= FALSE;
+	motor2_led:= FALSE;
+	motor1:= FALSE;
+	motor1_led:= FALSE;
+	offset_time := T#0S;
+	motor_et:= T#0S;
+END_IF
+
+IF motor1_fault THEN
+	reset_motor1:= TRUE;
+	motor1:= FALSE;
+	motor1_led:= FALSE;
+	fault_led:= TRUE;
+	offset_time := motor_et;
+END_IF
+IF motor2_fault THEN
+	reset_motor2:= TRUE;
+	motor2:= FALSE;
+	motor2_led:= FALSE;
+	fault_led:= TRUE;
+	offset_time := motor_et;
+END_IF
+IF motor3_fault THEN
+	reset_motor3:= TRUE;
+	motor3:= FALSE;
+	motor3_led:= FALSE;
+	fault_led:=	 TRUE;
+	offset_time := motor_et;
+END_IF
+
+IF reset_motor1 AND NOT motor1_fault THEN
+    motor1 := TRUE;
+    motor1_led := TRUE;
+    fault_led := FALSE;
+END_IF
+
+IF reset_motor2 AND NOT motor2_fault THEN
+    motor2 := TRUE;
+    motor2_led := TRUE;
+    fault_led := FALSE;
+END_IF
+
+IF reset_motor3 AND NOT motor3_fault THEN
+    motor3 := TRUE;
+    motor3_led := TRUE;
+    fault_led := FALSE;
+END_IF
+
+IF reset_all THEN
+    motor1 := FALSE;
+    motor2 := FALSE;
+    motor3 := FALSE;
+    motor1_led := FALSE;
+    motor2_led := FALSE;
+    motor3_led := FALSE;
+    fault_led := FALSE;
+    motor_et := T#0S;
+	motor_timer.pt := T#35S;
+	offset_time := T#0S;
+END_IF
+
+fbd_call();
+ld_call();
+ 
+ 
