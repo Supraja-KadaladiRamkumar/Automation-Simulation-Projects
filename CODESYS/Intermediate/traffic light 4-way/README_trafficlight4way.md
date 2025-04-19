@@ -46,3 +46,8 @@ _**Language:**_ Structured Text (ST)
 📷 **Visual Reference**
 
 Screenshots of the HMI are attached, including the visualization layout before simulation and the simulation outputs for a few traffic light cycles.
+
+📌 **Notes**
+
+- This is an intermediate-level project created during CODESYS practice to explore a real life 4-way traffic signal scenario in ST.
+- Code is provided in 'traffic light 4 way.txt'.
