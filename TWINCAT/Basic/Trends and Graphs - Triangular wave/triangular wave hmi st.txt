@@ -1,0 +1,28 @@
+IF (start OR timer_start) AND NOT stop AND NOT reset THEN
+	timer_value:= timer_value + T#1MS;
+	timer_start:= TRUE;
+	IF timer_value >= timer_limit THEN
+		timer_value:= T#0MS;
+		IF total_increase THEN
+			total:= total + 2.5;
+			IF total >= max_value THEN
+				total_increase:= FALSE;
+				total_decrease:= TRUE;
+			END_IF
+		END_IF
+		IF total_decrease THEN
+			total:= total - 2.5;
+			IF total <= min_value THEN
+				total_increase:= TRUE;
+				total_decrease:= FALSE;
+			END_IF
+		END_IF
+	END_IF
+END_IF
+IF stop OR reset AND NOT start THEN
+	total_increase:= TRUE;
+	total_decrease:= FALSE;
+	total:= 0.0;
+	timer_value:= T#0MS;
+	timer_start:= FALSE;
+END_IF
