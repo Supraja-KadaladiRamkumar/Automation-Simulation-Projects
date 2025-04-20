@@ -1,0 +1,50 @@
+ld_call();
+temp_m1:= ld_call.m1;
+temp_m3:= ld_call.m3;
+temp_m2:= ld_call.m2;
+temp_process_reset:= ld_call.process_reset;
+temp_input_led:= ld_call.input_led;
+temp_drain_led:= ld_call.drain_led;
+temp_mixing_led:= ld_call.mixing_led;
+temp_time_input:= TO_REAL(ld_call.input_timer.ET);
+temp_time_drain:= TO_REAL(ld_call.drain_timer.ET);
+temp_time_mixing := TO_REAL(ld_call.mixer_timer.ET);
+IF NOT ld_call.start_pb OR ld_call.stop_pb OR temp_process_reset THEN
+	temp_input_led:= FALSE;
+	temp_drain_led:= FALSE;
+	temp_mixing_led:= FALSE;
+	temp_input_led_off:= TRUE;
+	temp_drain_led_off:= TRUE;
+	temp_mixing_led_off:= TRUE;
+END_IF
+IF temp_m1 THEN
+    water_level_percentage:= 100 - ((temp_time_input/ 10000.0) * 100.0);
+	temp_input_led:= TRUE;
+	temp_drain_led:= FALSE;
+	temp_mixing_led:= FALSE;
+	temp_input_led_off:= FALSE;
+	temp_drain_led_off:= TRUE;
+	temp_mixing_led_off:= TRUE;
+END_IF
+IF temp_m2 THEN
+	rotation_angle := rotation_angle + ((temp_time_mixing / 10000.0) * (360.0/scale_factor));
+	temp_input_led:= FALSE;
+	temp_drain_led:= FALSE;
+	temp_mixing_led:= TRUE;
+	temp_input_led_off:= TRUE;
+	temp_drain_led_off:= TRUE;
+	temp_mixing_led_off:= FALSE;
+	
+	IF rotation_angle >= 360.0 OR ld_call.mixer_timer.Q THEN
+		rotation_angle := 0.0;
+	END_IF
+END_IF
+IF temp_m3 THEN
+	water_level_percentage :=  ((temp_time_drain/ 10000.0) * 100.0);
+	temp_input_led:= FALSE;
+	temp_drain_led:= TRUE;
+	temp_mixing_led:= FALSE;
+	temp_input_led_off:= TRUE;
+	temp_drain_led_off:= FALSE;
+	temp_mixing_led_off:= TRUE;
+END_IF
