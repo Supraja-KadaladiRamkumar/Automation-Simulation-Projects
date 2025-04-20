@@ -1,4 +1,4 @@
-🧪 **Mixing Liquid in Tank – Ladder Logic (LD) + Structured Text (ST)**
+🧪 **Mixing Liquid in Tank**
 
 This project simulates a liquid mixing process in a tank using a combination of:
 - Ladder Logic (LD) for valve and process control
@@ -44,7 +44,7 @@ _**Structured Text (ST):**_
 
 _**Platform:**_ Beckhoff TwinCAT 3.1
 
-_**Language:**_ Ladder Diagram (LD)
+_**Language:**_ Ladder Logic (LD) + Structured Text (ST)
 
 🛠️ **Tools Needed to Simulate**
 
