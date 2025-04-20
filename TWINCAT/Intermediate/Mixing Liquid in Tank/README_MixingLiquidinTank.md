@@ -37,6 +37,7 @@ _**Structured Text (ST):**_
 - Each screen activates a specific LED indicator.
 - Relevant valves/motor symbols appear based on the phase.
 - Tank level and mixer rotation are visually updated.
+  
 ⚠️ _Note:_ The HMI is basic due to TwinCAT's limited visualization capabilities. It is intended for simulation and understanding of the process rather than high-end interaction.
 
 🔧 **Tools Used**
