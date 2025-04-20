@@ -1,0 +1,85 @@
+TYPE traffic_enuma :
+(
+	green := 0,
+	yellow := 1,
+	red := 2
+);
+END_TYPE
+
+//st method
+elapsed_time:= traffic_timer.ET;
+traffic_timer (in:= start AND NOT stop AND NOT traffic_timer.q, pt:= T#20S);
+green_light:= start AND NOT stop AND NOT red_light AND NOT yellow_light;
+IF elapsed_time = T#7S THEN
+	green_light:= FALSE;
+	yellow_light:= TRUE;
+END_IF
+IF elapsed_time > T#7S AND elapsed_time < T#10S THEN
+	yellow_light:= FALSE;
+	red_light:= TRUE;
+END_IF
+IF elapsed_time = T#20S THEN
+	red_light:= FALSE;
+	yellow_light:= FALSE;
+END_IF
+IF traffic_timer.q THEN
+	elapsed_time:= T#0S;
+	green_light:= TRUE;
+END_IF
+
+//fbd method
+fbd_call.start:= start;
+fbd_call.stop:= stop;
+fbd_call.traffic_timer:= traffic_timer;
+fbd_call.elapsed_time:= elapsed_time;
+fbd_call();
+green_light:= fbd_call.green_light;
+red_light:= fbd_call.red_light;
+yellow_light:= fbd_call.yellow_light;
+
+//ladder logic method
+ladder_call();
+
+//enum method with case 
+elapsed_time_enum:= traffic_timer_enum.ET;
+traffic_timer_enum (in:= start_enum AND NOT stop_enum AND NOT off_enum AND NOT traffic_timer_enum.q, pt:= T#20S);
+IF stop_enum OR off_enum THEN
+    green_light_enum := FALSE;
+    yellow_light_enum := FALSE;
+    red_light_enum := FALSE;
+    enum_call := traffic_enuma.green;      // Reset to default state
+    elapsed_time_enum := T#0S;            // Reset timer
+ELSE
+	CASE enum_call OF
+		traffic_enuma.green:
+			green_light_enum:= TRUE;
+			yellow_light_enum:= FALSE;
+			red_light_enum:= FALSE;
+			IF T#7S <= elapsed_time_enum AND elapsed_time_enum < T#10S THEN
+				enum_call:= traffic_enuma.yellow;
+			END_IF
+		traffic_enuma.yellow:
+			green_light_enum:= FALSE;
+			yellow_light_enum:= TRUE;
+			red_light_enum:= FALSE;
+			IF T#10S <= elapsed_time_enum THEN
+				enum_call:= traffic_enuma.red;
+			END_IF
+		traffic_enuma.red:
+			green_light_enum:= FALSE;
+			yellow_light_enum:= FALSE;
+			red_light_enum:= TRUE;
+			IF elapsed_time_enum >= T#20S THEN
+				enum_call:= traffic_enuma.green;
+				elapsed_time_enum := T#0S;
+			END_IF
+		ELSE
+			// Handle unexpected cases safely
+			green_light_enum := FALSE;
+			yellow_light_enum := FALSE;
+			red_light_enum := FALSE;
+			enum_call := traffic_enuma.green; // Reset to green
+			elapsed_time_enum := T#0S;
+	END_CASE
+
+END_IF;
