@@ -1,0 +1,26 @@
+IF (start OR timer_on) AND NOT stop AND NOT reset THEN
+	timer_on:= TRUE;
+	timer_value:= timer_value + T#1MS;
+	IF timer_value >= square_time_limit THEN
+		square_signal:= NOT square_signal;
+		IF square_signal THEN
+			square_wave:= 50.0;
+		ELSE
+			square_wave:= 0.0;	
+		END_IF
+	END_IF
+	IF timer_value >= linear_time_limit THEN
+		linear_value:= linear_value + 1.0;
+		IF linear_value >= max_linear THEN
+			linear_value:= 0.0;
+			timer_value:= T#0MS;
+		END_IF
+	END_IF
+
+END_IF
+IF reset OR stop AND NOT start THEN
+	linear_value:= 0.0;
+	timer_value:= T#0MS;
+	square_wave:= 0.0;
+	timer_on:= FALSE;
+END_IF
