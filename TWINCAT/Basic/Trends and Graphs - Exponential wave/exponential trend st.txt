@@ -1,0 +1,18 @@
+IF (start OR timer_on) AND NOT stop AND NOT reset THEN
+	timer_value:= timer_value+ T#1MS;
+	timer_on:= TRUE;
+	IF timer_value >= timer_limit THEN
+		expo_value:= base_value * expo_value;
+		timer_value:= T#0MS;
+	END_IF
+	IF expo_value >= max_limit THEN
+		timer_value:= T#0MS;
+		timer_on:= FALSE;
+		expo_value:= 1.0;
+	END_IF
+END_IF
+IF (reset OR stop) AND NOT start THEN
+	timer_value:= T#0MS;
+	timer_on:= FALSE;
+	expo_value:= 1.0;
+END_IF
