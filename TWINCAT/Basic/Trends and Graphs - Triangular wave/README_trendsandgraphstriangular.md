@@ -4,7 +4,7 @@ This project focuses on simulating and visualizing a triangular waveform trend u
 
 🧩 **Logic Description**
 
-- At the core of the project is an ST-based simulation of a triangular waveform.
+At the core of the project is an ST-based simulation of a triangular waveform.
   
   **_Key points:_**
   - total is the key value plotted on the YT graph.
