@@ -1,0 +1,14 @@
+IF (start OR timer_on OR reset) AND NOT stop THEN
+	time_total= time_total + T#10MS;
+	timer_on= TRUE;
+	IF time_total = T#1000MS THEN
+		ramp_total= ramp_total + 1.0;
+		time_total= T#0MS;
+	END_IF
+	IF ramp_total  max_limit OR reset OR stop THEN	
+		timer_on= FALSE;
+		time_total= T#0MS;
+		ramp_total= 0.0;		
+	END_IF
+END_IF
+
