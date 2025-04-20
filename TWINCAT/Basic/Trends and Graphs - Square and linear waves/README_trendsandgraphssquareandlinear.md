@@ -9,6 +9,7 @@ This program combines two classic waveforms—linear ramp and square wave—gene
 _**Timer logic:**_ Simulated using timer_value, incremented every cycle by T#1MS.
   - _Square wave:_ Toggles square_signal on reaching square_time_limit, and switches square_wave between 0.0 and 50.0 accordingly.
   - _Linear ramp:_ Increments linear_value by 1.0 every linear_time_limit. When it hits max_linear, both linear_value and timer_value reset.
+    
 **_Reset/Stop Logic:_** If either reset or stop is active (and start is not), everything resets:
   - linear_value, square_wave, timer_value → set to 0
   - timer_on → turned off
@@ -22,6 +23,7 @@ From the trend image:
 - Bottom Graph (Square signal – Blue Blocks):
   - Alternates between high (50.0) and low (0.0) at regular intervals.
   - Gives a classic digital square wave appearance.
+    
 ⏱ Both signals reset periodically, and their timing is aligned through shared timer logic.
 
 🔧 **Tools Used**
