@@ -29,7 +29,9 @@ _**Structured Text (ST):**_
 - Calculates water_level_percentage during input/drain phases.
 - Computes rotation_angle during the mixing phase.
 - Uses real-time timer values (ET) for realistic visual feedback.
-- Code is provided in 'mixing liquid st code.png'.
+- Managing LED states based on the active process phase.
+- Ensuring all LEDs turn OFF gracefully when the process is stopped or reset.
+- Code is provided in 'mixing liquid st.txt'.
 
 💻 **HMI Logic**
 
