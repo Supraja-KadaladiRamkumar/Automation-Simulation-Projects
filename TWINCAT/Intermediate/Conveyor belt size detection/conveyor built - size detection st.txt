@@ -1,0 +1,35 @@
+conveyor:= (start OR conveyor) AND NOT stop AND NOT object_sensor AND NOT fault_detected AND NOT reset;
+conveyor_timer (in:= conveyor, pt:= T#10S);
+IF NOT conveyor_timer.Q THEN
+	IF object_sensor THEN
+		temp_object:= TRUE;
+		IF conveyor_timer.ET <= T#5S AND manual_input THEN
+			temp_manual := TRUE;
+		END_IF
+	END_IF
+END_IF
+IF temp_object THEN
+    IF temp_manual THEN
+        bin_small := TRUE;
+        bin_big := FALSE;
+	ELSE
+        bin_small := FALSE;
+        bin_big := TRUE;
+   	END_IF
+END_IF
+IF conveyor_timer.Q AND NOT manual_input THEN
+	fault_detected:= TRUE;
+END_IF
+IF reset OR stop THEN
+	fault_detected:= FALSE;
+	object_sensor:= FALSE;
+	manual_input := FALSE;
+	temp_object := FALSE;
+    temp_manual := FALSE;
+	bin_small := FALSE;
+    bin_big := FALSE;
+END_IF
+
+fbd_call();
+ld_call();
+	
