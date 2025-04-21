@@ -1,4 +1,4 @@
-🚧📦 **Automation Program – Structured Text (ST)**
+🚧📦 **Object Sorting in Conveyor Belt – – Structured Text (ST)**
 
 This program simulates a basic object sorting system in an industrial process automation setting. Based on sensor input and manual triggers, objects detected on a conveyor belt are sorted into two bins — small or big — depending on defined logic conditions using Structured Text (ST) in TwinCAT. It includes fault detection for delayed manual input.
 
