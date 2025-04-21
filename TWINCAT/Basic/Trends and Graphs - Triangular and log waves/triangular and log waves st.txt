@@ -1,0 +1,13 @@
+IF (start OR timer_on) AND NOT stop AND NOT reset THEN
+	timer_on:= TRUE;
+	timer_value:= timer_value + T#1MS;
+	wrapped_time := REAL_TO_TIME (TIME_TO_REAL(timer_value) - (TIME_TO_REAL(wave_time)* TRUNC(TIME_TO_REAL(timer_value) / TIME_TO_REAL(wave_time))));
+	triangle_signal := amplitude * (2.0 * ABS(TIME_TO_REAL(wrapped_time) / TIME_TO_REAL(wave_time) - 0.5));
+	log_signal:= amplitude * LN ((growth_factor * (TIME_TO_REAL(timer_value)) + 1));
+END_IF
+IF (stop OR reset) AND NOT start THEN
+	timer_value:= T#0MS;
+	triangle_signal:= 0.0;
+	log_signal:= 0.0;
+	timer_on:= FALSE;
+END_IF																																																											
