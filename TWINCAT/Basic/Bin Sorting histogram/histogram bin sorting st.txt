@@ -1,0 +1,19 @@
+FOR i:= 0 TO 9 DO
+	//negative bin
+	IF inputs[i] <0 THEN
+		bins[0]:= bins[0] + 1;
+	//positive bin
+	ELSIF inputs[i] > 0 AND inputs[i] <= 10 THEN
+		bins[2]:= bins[2] + 1;
+	//zero bin
+	ELSE
+		bins[1]:= bins[1] + 1;
+	END_IF
+	cycle_counter:= cycle_counter + 1;
+END_FOR
+IF cycle_counter > 10 THEN
+	cycle_counter:= 0;
+	FOR i:= 0 TO 2 DO
+		bins[i]:=0;
+	END_FOR
+END_IF
