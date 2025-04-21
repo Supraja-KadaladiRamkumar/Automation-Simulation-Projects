@@ -20,6 +20,7 @@ This program classifies an array of ten input values into three histogram bins: 
 
 - A 3-bar histogram represents the bins.
 - TwinCAT HMI displays each bar dynamically based on bin counts.
+  
 ⚠️ While TwinCAT’s native HMI is limited, it still supports simple real-time visualizations like bar graphs. For more advanced or animated charts, integration with third-party platforms or custom visuals would enhance user experience.
 
 🔧 **Tools Used**
