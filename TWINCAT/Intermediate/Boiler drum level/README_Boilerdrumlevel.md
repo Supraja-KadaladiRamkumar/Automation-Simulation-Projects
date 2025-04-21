@@ -1,4 +1,4 @@
-🧪
+🧪 **Tank Liquid Level Simulation**
 
 This PLC program simulates a tank-level filling and draining system. The system maintains the level between 25% and 75% using two sequential operations: filling through an inlet valve and draining through an outlet valve. The simulation mimics level increase and decrease through arithmetic operations on a level variable, while LED indicators and a progress bar represent system status on the HMI.
 
