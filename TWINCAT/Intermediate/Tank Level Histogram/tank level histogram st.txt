@@ -1,0 +1,40 @@
+IF submitted AND NOT overflow_alarm THEN
+	input_valve_values[i]:= sensor_input;
+	output_valve_values[i]:= sensor_output;
+	(*to track actual values of input & output temporarily because if tracked directly, even if hmi updates due to
+	plc scan cycle values don't update immediately*)
+	current_input_val := input_valve_values[i];
+    current_output_val := output_valve_values[i];
+	IF i =0 THEN
+		tank_level_values[0]:= min_tank_level + (input_valve_values[0] - output_valve_values[0]);
+	ELSE
+		tank_level_values[i]:= tank_level_values[i-1] + (current_input_val - current_output_val);
+	END_IF
+	
+	IF submitted AND ((tank_level_values[i] >= max_tank_level) OR (i>=10)) THEN
+		overflow_alarm:= TRUE;
+		invisibility:= TRUE;
+	ELSE
+		i:= i + 1;
+	END_IF
+	submitted:= FALSE;
+END_IF
+
+IF overflow_reset THEN
+	overflow_alarm:= FALSE;
+	overflow_reset:= FALSE;
+	invisibility:= FALSE;
+END_IF
+
+IF reset THEN
+	FOR i:= 0 TO 4 DO
+		tank_level_values[i]:= 0.0;
+		input_valve_values[i]:= 0.0;
+		output_valve_values[i]:= 0.0;
+	END_FOR
+	overflow_alarm:= FALSE;
+	i:= 0;
+	reset:= FALSE;
+	invisibility:= FALSE;
+END_IF
+	
