@@ -1,0 +1,12 @@
+IF (start OR timer_on) AND NOT stop AND NOT reset THEN
+	timer_on:= TRUE;
+	time_interval:= time_interval + T#10MS;
+	IF time_interval >= T#200MS THEN
+		seed := (1664525 * seed + 1013904223) MOD 2147483647; 
+		random_value := DINT_TO_REAL(seed) / 2147483647.0;
+		noise_pure:= random_value* amplitude;
+		noise_bounded:= 5.0 * random_value;
+		noise_white:= SIN(TIME_TO_REAL(time_interval)* frequency) + (random_value* amplitude);
+		time_interval:= T#0MS;
+	END_IF
+END_IF
