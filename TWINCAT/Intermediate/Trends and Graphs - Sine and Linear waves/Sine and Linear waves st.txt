@@ -1,0 +1,29 @@
+delay_timer(in:= (start OR timer_start) AND NOT stop AND NOT delay_timer.Q, pt:= delay_time);
+IF (start OR reset OR timer_start) AND NOT stop AND NOT loop_done THEN
+	timer_start:= TRUE;
+	IF delay_timer.Q AND NOT loop_done THEN
+		temp:= temp + 1.5;
+		IF temp >= max_temp THEN
+			loop_done:= TRUE;
+		END_IF
+	END_IF
+END_IF
+IF reset OR stop AND NOT start THEN
+	loop_done:= FALSE;
+	timer_start:= FALSE;
+	temp:= 0.0;
+END_IF
+
+IF (start2 OR reset2) AND NOT stop2 THEN
+	time_increase:= time_increase + T#100MS	;
+	IF time_increase >= T#2S THEN
+		time_increase:= T#0S;
+		sine:= sine + 0.1;
+		total:= 20.0 + 5.0 * SIN(sine);
+	END_IF
+	IF reset2 OR stop2 AND NOT start2 THEN
+		time_increase:= T#0S;
+		sine:= 0.0;
+		total:= 0.0;
+	END_IF
+END_IF
