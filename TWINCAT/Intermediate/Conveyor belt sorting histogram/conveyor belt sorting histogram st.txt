@@ -1,0 +1,144 @@
+m1:= (start OR m1) AND NOT stop AND NOT reset_whole;
+start_timer(in:= m1 AND NOT object_detection_sensor AND NOT start_timer.Q, pt:= T#5S);
+conveyor_belt:= (start_timer.Q OR conveyor_belt) AND NOT object_detection_sensor;
+r_trig_obj(CLK := object_detection_sensor);
+
+
+//object small
+set_diverter_small := r_trig_obj.Q AND (object_size = 0) AND NOT conveyor_belt AND NOT diverter_big;
+reset_diverter_small := reset_whole OR NOT object_detection_sensor;
+RS_diverter_small(Set := set_diverter_small, reset1:= reset_diverter_small);
+diverter_small := RS_diverter_small.Q1;
+pulse_timer_small(IN := diverter_small, PT := T#2S);
+r_trig_pack_small(CLK := pack_timer_small.Q);
+pack_timer_small(in:= move_to_pack_small AND NOT pack_timer_small.Q, pt:= T#2S);
+small_count(cu:= pulse_timer_small.Q, reset:= reset_whole OR counter_reset_small OR r_trig_pack_small.q, pv:= 5);
+IF pulse_timer_small.Q THEN
+	IF small_count.CV = 1 THEN
+		histogram_small[small_count.CV-1] := 1;
+	ELSIF small_count.CV > 1 AND small_count.CV <= 5 THEN
+		histogram_small[small_count.CV-1]:= histogram_small[small_count.CV-2] + 1;
+		IF small_count.CV = 5 THEN
+			move_to_pack_small:= TRUE;
+		ELSIF small_count.CV >= 6 THEN
+			overflow_limit_small:= TRUE;
+		END_IF
+	END_IF
+END_IF
+IF r_trig_pack_small.Q THEN
+    pack_led_small := TRUE;
+    FOR i := 0 TO 4 DO
+        histogram_small[i] := 0;
+    END_FOR
+END_IF
+IF conveyor_belt AND NOT (object_detection_sensor AND (small_count.CV = 5)) THEN
+    pack_led_small := FALSE;
+    move_to_pack_small := FALSE;
+END_IF
+
+//object big
+set_diverter_big := r_trig_obj.Q AND (object_size = 1) AND NOT conveyor_belt AND NOT diverter_small;
+reset_diverter_big := reset_whole OR NOT object_detection_sensor;
+RS_diverter_big(Set := set_diverter_big, reset1:= reset_diverter_big);
+diverter_big := RS_diverter_big.Q1;
+pulse_timer_big(IN := diverter_big, PT := T#2S);
+r_trig_pack_big(CLK := pack_timer_big.Q);
+pack_timer_big(in:= move_to_pack_big AND NOT pack_timer_big.Q, pt:= T#2S);
+big_count(cu:= pulse_timer_big.Q, reset:= reset_whole OR counter_reset_big OR r_trig_pack_big.Q, pv:= 5);
+IF pulse_timer_big.Q THEN
+	IF big_count.CV = 1 THEN
+		histogram_big[big_count.CV-1] := 1;
+	ELSIF big_count.CV > 1 AND big_count.CV <= 5 THEN
+		histogram_big[big_count.CV-1]:= histogram_big[big_count.CV-2] + 1;
+		IF big_count.CV = 5 THEN
+			move_to_pack_big:= TRUE;
+		ELSIF big_count.CV >= 6 THEN
+			overflow_limit_big:= TRUE;
+		END_IF
+	END_IF
+END_IF
+IF r_trig_pack_big.Q THEN
+    pack_led_big := TRUE;
+    FOR i := 0 TO 4 DO
+        histogram_big[i] := 0;
+    END_FOR
+END_IF
+IF conveyor_belt AND NOT (object_detection_sensor AND (big_count.CV = 5)) THEN
+    pack_led_big := FALSE;
+    move_to_pack_big := FALSE;
+END_IF
+
+//small counter overflow
+IF overflow_limit_small OR m2 THEN
+	m2:= TRUE;
+	blink_timer_small(in:= m2 AND NOT reset_whole AND NOT blink_timer_small.Q AND NOT counter_reset_small, pt:= T#500MS);
+	IF blink_timer_small.Q THEN
+		small_box_overflow:= NOT small_box_overflow;
+	END_IF
+END_IF
+//small counter reset
+IF counter_reset_small THEN
+	m2:= FALSE;
+	set_diverter_small  := FALSE;
+    reset_diverter_small := FALSE;
+	overflow_limit_small:= FALSE;
+	pack_led_small:= FALSE;
+	diverter_small:= FALSE;
+	small_box_overflow:= FALSE;
+	move_to_pack_small:= FALSE;
+	FOR i:= 0 TO (max_limit-1) DO
+		histogram_small[i]:= 0;
+	END_FOR
+END_IF
+
+//big counter overflow
+IF overflow_limit_big OR m3 THEN
+	m3:= TRUE;
+	blink_timer_big(in:= m3 AND NOT reset_whole AND NOT blink_timer_big.Q AND NOT counter_reset_big, pt:= T#500MS);
+	IF blink_timer_big.Q THEN
+		big_box_overflow:= NOT big_box_overflow;
+	END_IF
+END_IF
+//big counter reset
+IF counter_reset_big THEN
+	m3:= FALSE;
+	diverter_big:= FALSE;
+	set_diverter_big := FALSE;
+    reset_diverter_big := FALSE;
+	overflow_limit_big:= FALSE;
+	big_box_overflow:= FALSE;
+	move_to_pack_big:= FALSE;
+	pack_led_big:= FALSE;
+	FOR i:= 0 TO (max_limit-1) DO
+		histogram_big[i]:= 0;
+	END_FOR
+END_IF
+
+//reset process or emergency stop block
+IF reset_whole OR stop THEN
+	conveyor_belt:= FALSE;
+	object_detection_sensor:= FALSE;
+	m1:= FALSE;
+	m2:= FALSE;
+	m3:= FALSE;
+	set_diverter_big := FALSE;
+    	reset_diverter_big := FALSE;
+	set_diverter_small  := FALSE;
+   	reset_diverter_small := FALSE;
+	diverter_small:= FALSE;
+	diverter_big:= FALSE;
+	small_box_overflow:= FALSE;
+	big_box_overflow:= FALSE;
+	counter_reset_big:= FALSE;
+	counter_reset_small:= FALSE;
+	overflow_limit_small:= FALSE;
+	overflow_limit_big:= FALSE;
+	move_to_pack_small:= FALSE;
+	move_to_pack_big:= FALSE;
+	pack_led_small:= FALSE;
+	pack_led_big:= FALSE;
+	FOR i:= 0 TO (max_limit-1) DO
+		histogram_big[i]:= 0;
+		histogram_small[i]:= 0;
+	END_FOR
+END_IF
