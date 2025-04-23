@@ -74,6 +74,7 @@ This allows quick diagnosis of:
   - histogram_small[0..4]
   - histogram_big[0..4]
 - Toggle buttons between screens for real-time monitoring
+  
 ⚠️ Note: The HMI is basic due to TwinCAT's limited visualization capabilities. It is intended for simulation and understanding of the process rather than high-end interaction.
 
 🔧 **Tools Used**
