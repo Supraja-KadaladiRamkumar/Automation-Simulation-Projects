@@ -1,0 +1,26 @@
+PROGRAM MAIN
+VAR
+	analog_current_input: real;
+	rpm: REAL;
+	motor_from_safety AT %IX40.0 : BOOL;
+	reset_to_safety  AT %QX66.0: BOOL;
+	motorspeed_uint AT %QB48: UINT;
+	MotorSpeed: REAL;
+	safety_run AT %QX40.0 : BOOL;
+	safety_errack AT %QX40.1 : BOOL;
+END_VAR
+
+
+//scaled := (raw_value * 5000) / 27648.. 
+//the raw part would be (analog current value- 4ma)/(20 mA – 4 mA) 
+
+rpm := ((analog_current_input - 4.0) / 16.0) * 5000.0;
+
+IF rpm < 1000 THEN
+    MotorSpeed := 1000;
+ELSIF rpm > 5000 THEN
+   MotorSpeed := 5000;
+ELSIF rpm >= 1000 AND rpm <= 5000 THEN
+    MotorSpeed := rpm;
+END_IF
+motorspeed_uint := REAL_TO_UINT(rpm);
