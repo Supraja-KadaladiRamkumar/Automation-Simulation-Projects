@@ -45,5 +45,3 @@ Language: Structured Text (ST) for motor speed calculation. TwinSAFE Safety Func
 - The safety and PLC logics currently run independently for test purposes.
 - Both components are functional but not yet integrated in a single controller project.
 - Future plan: Integrate safety and motor logic fully within a common simulation environment using a unified PLC-Safety mapping.
-
-
