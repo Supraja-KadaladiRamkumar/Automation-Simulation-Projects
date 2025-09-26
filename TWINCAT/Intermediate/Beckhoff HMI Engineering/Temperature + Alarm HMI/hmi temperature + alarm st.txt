@@ -1,0 +1,40 @@
+temp_sensor:= (start OR temp_sensor) AND NOT stop;
+
+temp_timer(in:= (temp_sensor AND NOT cooler) AND NOT temp_timer.Q AND NOT temp_cooling_timer.Q AND NOT cooler_timer.Q, pt:= T#1S);
+IF temp_timer.Q THEN
+	temp_reading_inc:= temp_reading_inc + 2.0;
+	IF temp_reading_inc > max_limit THEN
+		alarm:= TRUE;
+		temporary:= temp_reading_inc;
+		temp_reading_dec:= temporary;
+		temp_reading_inc:= 0.0;
+		temporary:= 0.0;
+	END_IF
+END_IF
+
+temp_cooling_timer(in:= (temp_sensor AND alarm) AND NOT temp_timer.Q AND NOT temp_cooling_timer.Q, pt:= T#1S);
+IF temp_cooling_timer.Q THEN
+	temp_reading_dec:= temp_reading_dec - 2.0;
+	IF temp_reading_dec <= min_limit THEN
+		alarm:= FALSE;
+		temporary:= temp_reading_dec;
+		temp_reading_inc:= temporary;
+		temp_reading_dec:= 0.0;
+		temporary:= 0.0;
+	END_IF
+END_IF
+
+cooler_timer(in:= temp_sensor AND temp_cooling_timer.Q AND NOT alarm, pt:= T#10S);
+cooler:= alarm OR cooler_timer.Q;
+
+IF stop THEN
+	alarm:= FALSE;
+	temp_reading_inc:= 0.0;
+	cooler:= FALSE;
+	temporary:= 0.0;
+	temp_reading_dec:= 0.0;
+END_IF
+
+cooler_timer_elapsed:= cooler_timer.ET; 
+heater_timer_pending:= temp_timer.PT - temp_timer.ET; 
+cooling_timer_pending:= temp_cooling_timer.PT - temp_cooling_timer.ET; 
