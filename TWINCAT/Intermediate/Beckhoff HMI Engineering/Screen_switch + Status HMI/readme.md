@@ -6,18 +6,13 @@ This project simulates a four-step packaging process - Idle, Filling, Processing
 
 _Process flow_
 
-1. Idle
+1. Idle: System waits in standby until Start is pressed.
 
-System waits in standby until Start is pressed.
+2. Filling: Filling LEDs turn green while material is dispensed.
 
-2. Filling
-Filling LEDs turn green while material is dispensed.
+3. Processing: Product is processed; only the processing LED is active.
 
-3. Processing
-Product is processed; only the processing LED is active.
-
-4. Packaging
-Final packaging stage with its LED indicator.
+4. Packaging: Final packaging stage with its LED indicator.
 
 _Emergency stop_
 
@@ -57,5 +52,4 @@ _**HMI:**_ TwinCAT HMI Engineering
 - The HMI is designed for training and demonstration, not for production control.
 - All LEDs and timers reset cleanly when the Stop button is activated, ensuring safe shutdown at any stage.
 - The project shows how a simple ST program can drive a multi-screen HMI with phase-specific visibility and real-time feedback.
-packaging_led
-Variables reset to a safe state whenever Stop is pressed.
+
