@@ -57,4 +57,4 @@ _**Language:**_ Structured Text (ST)
 
 - ST code ensures dynamic behavior and calculations.
 - While TwinCAT provides basic HMI features, this project demonstrates real-time updates using available elements.
-🔧 Tools Used
+
