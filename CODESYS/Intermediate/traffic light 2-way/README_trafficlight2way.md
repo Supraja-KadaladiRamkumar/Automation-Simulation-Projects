@@ -45,4 +45,5 @@ Screenshots of the HMI are attached, including the visualization layout before s
 
 - This is an intermediate-level project created during CODESYS practice to explore a simple and straightforward 2-way traffic signal scenario in ST.
 - Code is provided in 'traffic light 2 way.txt'.
-- Future improvisations include adding a pedestrian crossing with dedicated pedestrian halt zones for more accurate signaling.
+- A separate code incorporating the stop block to resume/restart the program can be incorporated in future versions.
+- Future improvisations can also include adding a pedestrian crossing with dedicated pedestrian halt zones for more accurate signaling.
