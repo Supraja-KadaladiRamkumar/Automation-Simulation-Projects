@@ -16,8 +16,8 @@ _**Traffic Lights Covered:**_
 
 _**Timers Used:**_
 
-- traffic_timer: Controls the duration for each traffic phase (20 seconds).
-- pedestrian_timer: Manages the pedestrian crossing time (10 seconds).
+- traffic_timer: Controls the duration for each traffic phase (timer_preset: 20 seconds).
+- pedestrian_timer: Manages the pedestrian crossing time (pedestrian_preset: 10 seconds).
 - The timer resets after every transition to manage the next timed phase correctly.
 
 _**Main Signals:**_
@@ -37,7 +37,7 @@ _**Main Signals:**_
 
 3. _Phase 3 – Pedestrian Crossing_
    
-   After NW right turn, all signals turn red and pedestrian crossing is enabled for 10 seconds.
+   After NW right turn, all signals turn red and pedestrian crossing is enabled for the preset time.
 
 4. _Phase 4 – WS Right Green_
    
@@ -69,4 +69,5 @@ Screenshots of the HMI are attached, including the visualization layout before s
 - A single pedestrian crossing LED is included in this 3-way logic. It activates during the pedestrian phase and applies to all directions at once.
 - In the planned 4-way version, pedestrian functionality will be enhanced with two dedicated pedestrian halt zones for more accurate signaling.
 - The pedestrian crossing is included in the logic and shown in the HMI, but not with individual signal controls or button inputs per crosswalk.
+- A separate code incorporating the stop block to resume/restart the program can be incorporated in future versions. 
 - Code is provided in 'traffic light 3 way.txt'.
