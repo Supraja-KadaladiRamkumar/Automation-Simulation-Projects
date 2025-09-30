@@ -23,12 +23,4 @@ IF EastWestYellow AND elapsed_time >= timer_preset THEN
 	EastWestYellow:= FALSE;
 	NorthSouthRed:= FALSE;
 END_IF
-IF stop THEN
-	EastWestYellow:= FALSE;
-	EastWestGreen:= FALSE;
-	NorthSouthRed:= TRUE;
-	NorthSouthYellow:= FALSE;
-	NorthSouthGreen:=  FALSE;
-	EastWestRed:= TRUE;
-END_IF
-	
+
