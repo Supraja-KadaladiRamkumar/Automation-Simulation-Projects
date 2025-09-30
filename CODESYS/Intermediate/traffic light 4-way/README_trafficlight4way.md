@@ -31,7 +31,7 @@ Each stage transition is timer-driven to maintain realistic delays between chang
 
 - Pedestrian signals are active during safe vehicle red-light intervals
 - Transitions through red → green → yellow → red
-- Walk time: 10 seconds, with yellow starting after 7 seconds
+- Walk time: based on pedestrian_preset (10s), with yellow starting after pedestrian_preset_green (7s)
 
 🔧 **Tools Used**
 
@@ -50,4 +50,5 @@ Screenshots of the HMI are attached, including the visualization layout before s
 📌 **Notes**
 
 - This is an intermediate-level project created during CODESYS practice to explore a real life 4-way traffic signal scenario in ST.
+- A separate code incorporating the stop block to resume/restart the program can be incorporated in future versions.
 - Code is provided in 'traffic light 4 way.txt'.
