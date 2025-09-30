@@ -7,10 +7,10 @@ This program simulates a 2-way traffic control system with timed light transitio
 _**Key Behaviors:**_
 
 - The system starts with North-South (NS) Green, and East-West (EW) Red.
-- After 15 seconds, NS Green switches to NS Yellow.
-- After 5 seconds, NS Yellow switches to NS Red, and EW Green is activated.
-- After 15 seconds, EW Green turns into EW Yellow.
-- After 5 seconds, EW Yellow ends, and NS Red is cleared, resetting the cycle.
+- After the constant time assigned to the green_preset variable (15s), NS Green switches to NS Yellow.
+- When the timer's preset (20s) is reached, NS Yellow switches to NS Red, and EW Green is activated.
+- After the constant time assigned to the green_preset variable (15s), EW Green turns into EW Yellow.
+- When the timer's preset (20s) is reached, EW Yellow ends, and NS Red is cleared, resetting the cycle.
 - The cycle continues as long as start is active and stop is not pressed.
 
 _**Timer Logic:**_
