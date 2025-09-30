@@ -10,7 +10,7 @@ _**Key Behaviors:**_
 - After 15 seconds, NS Green switches to NS Yellow.
 - After 5 seconds, NS Yellow switches to NS Red, and EW Green is activated.
 - After 15 seconds, EW Green turns into EW Yellow.
-- After 5 seconds, EW Yellow ends, and NS Red is cleared — resetting the cycle.
+- After 5 seconds, EW Yellow ends, and NS Red is cleared, resetting the cycle.
 - The cycle continues as long as start is active and stop is not pressed.
 
 _**Timer Logic:**_
