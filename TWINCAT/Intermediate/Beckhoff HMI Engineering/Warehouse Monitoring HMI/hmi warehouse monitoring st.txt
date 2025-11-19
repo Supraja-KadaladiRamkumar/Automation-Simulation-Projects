@@ -1,0 +1,91 @@
+//zone 1 Storage unit
+
+IF start AND stage = 0 AND NOT stop THEN
+	cycle_start:= ((start OR cycle_start) AND NOT stop); 
+	stage:= 1;
+END_IF
+
+// use separate alarm acknowledgement variable for manually resetting when obstruction happens
+
+IF (cycle_start AND stage = 1) AND NOT stop AND NOT zone2_ready AND NOT zone3_running THEN
+	zone1_running := TRUE;
+	IF (zone1_running AND(zone1_temp > zone1_temp_max OR zone1_temp < zone1_temp_min) OR door_open_zone1 OR intrusion_zone1) THEN
+		zone1_ready := FALSE;
+		alarm_zone1 := TRUE; 
+	ELSE
+		alarm_zone1 := FALSE; 
+		zone1_ready := TRUE; 
+		packing_started:= FALSE; 
+	END_IF
+ELSE
+	alarm_zone1 := FALSE; 
+	zone1_ready := FALSE; 
+	zone1_temp:= 0.0;
+END_IF
+
+ //zone 2 processing unit
+IF stage = 2 AND machine_malfunction THEN
+	fault_zone2 := TRUE;     // latch fault
+	machine_running:= FALSE;
+END_IF;
+IF stage = 2 AND human_reset THEN
+	fault_zone2 := FALSE;    // clear fault on human reset
+	machine_running:= TRUE;
+END_IF;
+
+IF (zone1_ready OR (cycle_start AND stage =2 AND machine_running)) AND NOT stop AND NOT alarm_zone1 AND NOT zone3_ready AND NOT fault_zone2 THEN
+	transfer_zone12_timer(IN := (stage = 1) AND zone1_running AND NOT zone2_running, PT := T#10S);
+	machine_running:= TRUE;
+	IF transfer_zone12_timer.Q THEN
+		zone2_running := TRUE;
+		stage := 2;
+		zone1_ready := FALSE;
+		zone1_running := FALSE;
+	END_IF
+	IF machine_running THEN
+		process_timer(IN := zone2_running AND NOT fault_zone2 AND NOT alarm_zone1 AND NOT human_reset, PT := T#15S);
+		timer_et:= process_timer.et;
+		IF process_timer.Q THEN
+			batch_complete:= TRUE;
+			zone2_ready:= TRUE;
+		ELSE
+			batch_complete:= FALSE;
+			zone2_ready:= FALSE;
+		END_IF
+	ELSE
+        batch_complete := FALSE;
+        zone2_ready := FALSE;
+    END_IF
+END_IF
+ 
+//zone 3 packaging unit
+IF (zone2_ready OR (cycle_start AND stage = 3 AND packing_started)) AND NOT stop AND NOT zone1_ready AND NOT fault_zone2 THEN
+	transfer_zone23_timer(IN := (stage = 2) AND zone2_running AND NOT zone3_running, PT := T#10S);
+	IF transfer_zone23_timer.Q THEN
+		zone3_running := TRUE;
+		stage := 3;
+		zone2_ready := FALSE;
+		zone2_running := FALSE;
+		batch_complete:= FALSE;
+		machine_running:= FALSE;
+		packing_started := TRUE; 
+	END_IF
+	packaging_counter(cu:= object_detect_sensor AND zone3_running, pv:= 3, reset:= counter_reset);
+	counter_cv:= packaging_counter.CV;
+	IF packaging_counter.CV = packaging_counter.pv THEN 
+		zone3_ready:= TRUE; 
+	ELSIF packaging_counter.CV > packaging_counter.pv THEN 
+		zone3_ready := FALSE; 
+	END_IF
+	transfer_zone31_timer(in:= (stage = 3) AND zone3_ready AND NOT zone1_running, PT := T#10S);
+	IF transfer_zone31_timer.q THEN
+		counter_reset := transfer_zone31_timer.q AND stage = 3;
+		zone3_running := FALSE;
+		zone3_ready := FALSE;   
+		stage:= 1;
+		packing_started:= FALSE; 
+	ELSE
+		counter_reset := FALSE;
+	END_IF
+END_IF
+
