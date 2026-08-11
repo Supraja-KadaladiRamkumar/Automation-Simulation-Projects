@@ -1,0 +1,436 @@
+IF (gvl.gvl_b_start OR b_cycle_active) AND NOT gvl.gvl_b_system_abort THEN                      
+b_cycle_active:= TRUE;
+END_IF
+rtrig_alarmintialise(clk:= gvl.gvl_b_start);
+IF rtrig_alarmintialise.Q AND NOT b_alarmwarninginfo_initialise THEN
+b_alarmwarninginfo_initialise:= TRUE;
+fb_seriousalarmcowentry_message.CreateEx(TC_EVENTS.EventClass.serious_alarm_cowentry,0);
+fb_seriousalarmcowexit_message.CreateEx(TC_EVENTS.EventClass.serious_alarm_cowexit,0);
+fb_seriousalarmvacuum_message.CreateEx(TC_EVENTS.EventClass.serious_alarm_vacuum,0);
+fb_seriousalarmmilking_message.CreateEx(TC_EVENTS.EventClass.serious_alarm_milking,0);
+fb_notsoseriousalarmqc_message.CreateEx(TC_EVENTS.EventClass.not_so_serious_alarm_quickclean,0);
+fb_notsoseriousalarmfc_message.CreateEx(TC_EVENTS.EventClass.not_so_serious_alarm_fullclean,0);
+fb_endofdayinfo_message.CreateEx(TC_EVENTS.EventClass.Eod_info,0);
+fb_endofcycleinfo_message.CreateEx(TC_EVENTS.EventClass.Eoc_info,0);
+fb_criticalalarm_message.CreateEx(TC_EVENTS.EventClass.critical_alarm, 0);
+END_IF
+IF gvl.gvl_b_system_abort THEN
+b_cycle_active:= FALSE;
+b_entry_gate_closed:= TRUE;
+b_exit_gate_closed:= TRUE;
+b_entry_gate_open:= FALSE;
+b_exit_gate_open:= FALSE;
+b_cleaning_active:= FALSE;
+b_full_cleaning_unit_on:= FALSE;
+b_full_cleaning_unit_off:= TRUE;
+b_vacuum_pump_off:= TRUE;
+b_vacuum_pump_on:= FALSE;
+b_vacuum_pump_ready:= FALSE;
+b_milking_unit_retracted:= TRUE;
+b_milking_unit_extended:= FALSE;
+b_milk_extraction:= FALSE;
+b_vacuum_pump_ready:= FALSE;
+b_quick_cleaning_unit_off:= TRUE;
+b_quick_cleaning_unit_on:= FALSE;
+b_entry_gate_closed:= TRUE;
+b_entry_gate_open:= FALSE;
+END_IF
+IF gvl.gvl_b_reset AND NOT gvl.gvl_b_system_abort THEN
+i_current_stage:= 0;
+s_current_phase:= 'Idle';
+r_vacuum_pressure_actual:= 0.0;
+r_milk_in_tank:= 0.0;
+t_vacuum_timeout:= T#0S;  
+r_milk_currentcow:= 0.0;
+t_cow_entry_timeout:= T#0S;
+t_milking_timeout_offset:= T#0S;
+tmr_cow_exit_timeout:= T#0S;
+r_milk_flowrate:= r_milk_initial_flowrate;
+FOR i_cow_index := 0 TO i_cow_day_count BY 1 DO
+arr_cowinfo[i_cow_index].r_cow_milkcollected:= 0.0;
+arr_cowinfo[i_cow_index].i_current_cow_number:= 0;
+END_FOR
+i_cow_day_count:= 0;
+i_cow_index:= 0;
+i_current_cow_num:= 0;
+END_IF
+//in real life cases a common process fault gvl would be present and operator would acknowledge this as a whole instead of separate stage wise reset
+IF NOT gvl.gvl_b_system_abort THEN
+tmr_stage0_delay(in:= b_cycle_active AND (i_current_stage = 0), pt:= T#10S);
+tmr_entry_timeout(in:= (i_current_stage = 1) AND b_cow_entry_sensor AND NOT b_cow_presence_sensor AND NOT b_entry_timeout_reset AND NOT gvl.gvl_b_process_reset AND NOT gvl.gvl_b_emer_stop, pt:= T#15S);
+tmr_milking(in:= (b_cow_presence_sensor AND (i_current_stage = 3) AND b_milk_extraction) AND NOT b_milking_timeout_reset AND NOT gvl.gvl_b_process_reset AND NOT gvl.gvl_b_emer_stop, pt:= T#30S);
+tmr_milking_complete_delay(in:= (i_current_stage = 4), pt:= T#15S);
+tmr_exit_timeout(in:= (b_exit_gate_open AND b_cow_presence_sensor AND (i_current_stage = 5)) AND NOT b_exit_timeout_reset AND NOT gvl.gvl_b_process_reset AND NOT gvl.gvl_b_emer_stop, pt:= T#15S);
+
+CASE i_current_stage OF
+
+//idle phase
+0:
+IF b_cycle_active THEN
+s_current_phase:= 'Idle';
+b_entry_gate_closed:= TRUE;
+b_exit_gate_closed:= TRUE;
+b_vacuum_pump_off:= TRUE;
+b_milking_unit_retracted:= TRUE;
+b_quick_cleaning_unit_off:= TRUE;
+b_full_cleaning_unit_off:= TRUE;
+IF tmr_stage0_delay.Q THEN
+i_current_stage:= 1;
+END_IF
+END_IF
+
+//Animal detection phase
+1:
+s_current_phase:= 'Animal detection';
+t_cow_entry_timeout:= tmr_entry_timeout.PT - tmr_entry_timeout.ET;
+rtrig_cowentry(clk:= b_cow_entry_sensor);
+IF rtrig_cowentry.q THEN
+i_current_cow_num:= i_current_cow_num + 1;
+END_IF
+IF b_cycle_active AND b_cow_entry_sensor THEN
+b_entry_gate_closed:= FALSE;
+b_entry_gate_open:= TRUE;
+IF b_cow_presence_sensor THEN
+b_entry_gate_closed:= TRUE;
+b_entry_gate_open:= FALSE;
+i_current_stage:= 2;
+END_IF
+rtrig_seriousalarmcowentry(clk:= tmr_entry_timeout.q);
+IF rtrig_seriousalarmcowentry.Q THEN
+b_entry_timeout_alarm:= TRUE;
+fb_seriousalarmcowentry_message.Send(0);
+END_IF
+END_IF
+IF b_entry_timeout_reset THEN
+b_entry_timeout_alarm:= FALSE;
+b_entry_gate_closed:= TRUE;
+b_entry_gate_open:= FALSE;
+i_current_stage:= 0;
+END_IF
+IF gvl.gvl_b_emer_stop THEN
+b_entry_gate_closed:= TRUE;
+b_entry_gate_open:= FALSE;
+b_cycle_active:= FALSE;
+END_IF
+IF gvl.gvl_b_process_reset AND NOT gvl.gvl_b_emer_stop THEN
+s_current_phase:= 'Animal detection';
+i_current_stage:= 1;
+b_entry_gate_closed:= FALSE;
+b_entry_gate_open:= TRUE;
+b_cycle_active:= TRUE;
+END_IF
+
+
+//Milking preparation phase
+2:
+s_current_phase:= 'Milking preparation';
+// add hmi specific tags for various stages preparing equipment, vacuum buildup, vacuum ready, attaching milking unit
+tmr_stage2_delay(in:= b_vacuum_pump_on AND NOT b_vacuum_pump_ready AND NOT tmr_stage2_delay.Q, pt:= T#200MS);
+tmr_vacuum_timeout(in:= b_vacuum_pump_on AND NOT b_vacuum_pump_ready AND NOT b_vacuum_buildup_reset AND NOT gvl.gvl_b_process_reset AND NOT gvl.gvl_b_emer_stop, pt:= T#15S);
+t_vacuum_timeout:= tmr_vacuum_timeout.PT - tmr_vacuum_timeout.ET;
+IF b_cow_presence_sensor THEN
+b_vacuum_pump_off:= FALSE;
+b_vacuum_pump_on:= TRUE;
+IF b_vacuum_pump_on AND NOT b_vacuum_buildup_alarm THEN
+IF tmr_stage2_delay.Q THEN
+r_vacuum_pressure_actual:= r_vacuum_pressure_actual + 2.0;
+END_IF
+END_IF
+IF r_vacuum_pressure_actual >= r_vacuum_pressure_SP THEN
+b_vacuum_pump_ready:= TRUE;
+b_milking_unit_retracted:= FALSE;
+b_milking_unit_extended:= TRUE;
+r_vacuum_pressure_actual:= r_vacuum_pressure_SP;
+i_current_stage:= 3;
+r_milk_flowrate:= r_milk_initial_flowrate;        
+END_IF
+rtrig_seriousalarmvacuum(clk:= tmr_vacuum_timeout.q);
+IF rtrig_seriousalarmvacuum.q THEN
+b_vacuum_buildup_alarm:= TRUE;        
+fb_seriousalarmvacuum_message.Send(0);
+END_IF
+IF b_vacuum_buildup_reset THEN
+b_vacuum_buildup_alarm:= FALSE;
+r_vacuum_pressure_actual:= 0.0;
+b_milking_unit_retracted:= TRUE;
+b_milking_unit_extended:= FALSE;
+b_vacuum_pump_off:= TRUE;
+b_vacuum_pump_on:= FALSE;
+b_vacuum_pump_ready:= FALSE;
+END_IF
+END_IF
+IF gvl.gvl_b_emer_stop THEN
+b_vacuum_buildup_alarm:= FALSE;
+b_milking_unit_retracted:= TRUE;
+b_milking_unit_extended:= FALSE;
+b_vacuum_pump_off:= TRUE;
+b_vacuum_pump_on:= FALSE;
+b_vacuum_pump_ready:= FALSE;
+END_IF
+IF gvl.gvl_b_process_reset AND NOT gvl.gvl_b_emer_stop THEN
+s_current_phase:= 'Milking preparation';
+i_current_stage:= 2;
+r_vacuum_pressure_actual:= 0.0;
+END_IF
+
+//Milking active phase
+3:
+s_current_phase:= 'Milking active';
+rtrig_criticalalarm(clk:=(i_current_stage = 3) AND NOT b_cow_presence_sensor);
+rtrig_seriousalarmmilking(clk:= (t_milking_timeout_elapsed >=  t_milking_maxtime) AND b_cow_presence_sensor AND b_vacuum_pump_ready AND b_milking_unit_extended);
+IF rtrig_criticalalarm.q THEN
+fb_criticalalarm_message.send(0);
+b_cow_left_stall_alarm:= TRUE;
+b_vacuum_pump_off:= TRUE;
+b_vacuum_pump_on:= FALSE;                                
+b_vacuum_pump_ready:= FALSE;
+b_milking_unit_retracted:= TRUE;
+b_milking_unit_extended:= FALSE;
+b_milk_extraction:= FALSE;
+t_milking_timeout_offset:= t_milking_timeout_elapsed;
+END_IF
+IF b_cow_presence_sensor AND b_vacuum_pump_ready AND b_milking_unit_extended AND NOT b_milking_timeout_reset AND NOT b_cow_left_stall_reset THEN
+b_milk_extraction:= TRUE;
+END_IF
+t_milking_timeout_elapsed:= tmr_milking.et +  t_milking_timeout_offset;
+IF t_milking_timeout_elapsed >=  t_milking_maxtime THEN
+b_vacuum_pump_off:= TRUE;
+b_vacuum_pump_on:= FALSE;
+b_vacuum_pump_ready:= FALSE;
+b_milking_unit_retracted:= TRUE;
+b_milking_unit_extended:= FALSE;
+b_milk_extraction:= FALSE;
+END_IF
+IF rtrig_seriousalarmmilking.Q THEN
+fb_seriousalarmmilking_message.send(0);
+b_milking_timeout_alarm:= TRUE;
+END_IF
+tmr_stage3_delay(in:= b_cow_presence_sensor AND b_milk_extraction AND NOT tmr_milking.Q AND NOT tmr_stage3_delay.Q AND NOT b_milking_timeout_reset, pt:= T#200MS);
+IF tmr_stage3_delay.Q THEN
+IF r_milk_flowrate > 0.2 THEN
+r_milk_flowrate:= r_milk_flowrate - 0.2;
+r_milk_currentcow:= r_milk_currentcow + (r_milk_flowrate * r_scaling_factor);
+ELSE
+r_milk_flowrate:= 0.0;
+END_IF
+END_IF
+IF b_cow_presence_sensor AND b_milk_extraction AND r_milk_flowrate = 0.0 THEN
+i_current_stage:= 4;
+b_milk_extraction:= FALSE;
+//add low flow alarm and warning here if needed
+END_IF
+IF b_milking_timeout_reset THEN
+b_milking_timeout_alarm:= FALSE;
+b_vacuum_pump_off:= FALSE;
+b_vacuum_pump_on:= TRUE;
+b_vacuum_pump_ready:= TRUE;
+b_milking_unit_retracted:= FALSE;
+b_milking_unit_extended:= TRUE;
+b_milk_extraction:= TRUE;
+r_milk_flowrate:= r_milk_initial_flowrate;    
+r_milk_currentcow:= 0.0;
+t_milking_timeout_offset:= T#0S;
+END_IF
+IF b_cow_left_stall_reset THEN
+b_cow_left_stall_alarm:= FALSE;
+b_vacuum_pump_off:= FALSE;
+b_vacuum_pump_on:= TRUE;
+b_vacuum_pump_ready:= TRUE;
+b_milking_unit_retracted:= FALSE;
+b_milking_unit_extended:= TRUE;
+END_IF
+IF gvl.gvl_b_emer_stop THEN
+b_vacuum_pump_off:= TRUE;
+b_vacuum_pump_on:= FALSE;
+b_vacuum_pump_ready:= FALSE;
+b_milking_unit_retracted:= TRUE;
+b_milking_unit_extended:= FALSE;
+b_milk_extraction:= FALSE;                                                                          
+t_milking_timeout_offset:= t_milking_timeout_elapsed;
+END_IF
+IF gvl.gvl_b_process_reset AND NOT gvl.gvl_b_emer_stop THEN
+s_current_phase:= 'Milking active';
+i_current_stage:= 3;
+b_vacuum_pump_off:= FALSE;
+b_vacuum_pump_on:= TRUE;
+b_vacuum_pump_ready:= TRUE;
+b_milking_unit_retracted:= FALSE;
+b_milking_unit_extended:= TRUE;
+END_IF
+
+//Milking complete phase
+4:
+s_current_phase:= 'Milking complete';
+WHILE i_current_cow_num <= i_cow_day_count DO
+arr_cowinfo[i_cow_index].r_cow_milkcollected:= r_milk_currentcow;
+arr_cowinfo[i_cow_index].i_current_cow_number:= i_current_cow_num;
+r_milk_flowrate:= r_milk_initial_flowrate;
+b_vacuum_pump_ready:= FALSE;
+b_milking_unit_retracted:= TRUE;
+b_milking_unit_extended:= FALSE;
+b_milk_extraction:= FALSE;
+b_vacuum_pump_off:= TRUE;
+b_vacuum_pump_on:= FALSE;
+EXIT;
+END_WHILE
+IF tmr_milking_complete_delay.Q THEN
+i_current_stage:= 5;
+i_cow_index:= i_cow_index + 1;
+r_milk_in_tank:= r_milk_in_tank + r_milk_currentcow;
+END_IF
+
+//Cow exit phase
+5:
+s_current_phase:= 'Animal exit';
+b_exit_gate_open:= TRUE;
+b_exit_gate_closed:= FALSE;
+tmr_cow_exit_timeout:= tmr_exit_timeout.PT - tmr_exit_timeout.ET;
+rtrig_seriousalarmcowexit(clk:= tmr_exit_timeout.q);
+IF rtrig_seriousalarmcowexit.Q THEN
+b_exit_timeout_alarm:= TRUE;
+fb_seriousalarmcowexit_message.send(0);
+END_IF
+IF b_exit_timeout_reset THEN
+b_exit_timeout_alarm:= FALSE;
+END_IF
+IF (i_current_cow_num = i_cow_day_count) AND NOT b_cow_presence_sensor AND gvl.gvl_b_stop THEN
+i_current_stage:= 7;
+b_exit_gate_closed:= TRUE;
+b_exit_gate_open:= FALSE;
+ELSIF (i_current_cow_num < i_cow_day_count) AND NOT b_cow_presence_sensor AND NOT gvl.gvl_b_stop THEN
+i_current_stage:= 6;
+b_exit_gate_closed:= TRUE;
+b_exit_gate_open:= FALSE;
+END_IF
+IF gvl.gvl_b_emer_stop THEN
+b_exit_gate_closed:= TRUE;
+b_exit_gate_open:= FALSE;
+END_IF
+IF gvl.gvl_b_process_reset AND NOT gvl.gvl_b_emer_stop THEN
+i_current_stage:= 5;
+s_current_phase:= 'Animal exit';
+b_exit_gate_open:= TRUE;
+b_exit_gate_closed:= FALSE;
+END_IF
+
+
+//Quick cleaning phase
+6:
+s_current_phase:= 'Quick cleaning';
+b_cleaning_active:= TRUE;
+r_milk_currentcow:= 0.0;
+t_milking_timeout_offset:= T#0S;
+r_milk_flowrate:= r_milk_initial_flowrate;
+b_quick_cleaning_unit_off:= FALSE;
+b_quick_cleaning_unit_on:= TRUE;
+tmr_quick_clean(in:= b_quick_cleaning_unit_on AND NOT b_full_cleaning_unit_on AND NOT b_quickclean_timeout_alarm AND NOT b_quickclean_timeout_reset AND NOT gvl.gvl_b_process_reset AND NOT gvl.gvl_b_emer_stop, pt:= T#20S);
+t_quick_clean_elapsed:= tmr_quick_clean.PT - tmr_quick_clean.ET;
+IF tmr_quick_clean.q THEN
+i_current_stage:= 1;
+fb_endofcycleinfo_message.send(0);
+b_cleaning_active:= FALSE;
+b_quick_cleaning_unit_off:= TRUE;
+b_quick_cleaning_unit_on:= FALSE;
+r_vacuum_pressure_actual:= 0.0;
+t_vacuum_timeout:= T#0S;
+t_milking_timeout_elapsed:= T#0S;
+r_milk_flowrate:= r_milk_initial_flowrate;    
+r_milk_currentcow:= 0.0;
+t_milking_timeout_offset:= T#0S;
+t_milking_maxtime:= T#30S;
+END_IF
+IF tmr_quick_clean.et >= t_quick_cleaning_maxtime THEN
+b_quick_cleaning_unit_off:= TRUE;
+b_quick_cleaning_unit_on:= FALSE;
+b_cleaning_active:= FALSE;
+b_quickclean_timeout_alarm:= TRUE;
+fb_notsoseriousalarmqc_message.send(0);
+END_IF
+IF b_quickclean_timeout_reset THEN
+b_quickclean_timeout_alarm:= FALSE;
+b_quick_cleaning_unit_off:= FALSE;
+b_quick_cleaning_unit_on:= TRUE;
+b_cleaning_active:= TRUE;
+i_current_stage:= 6;
+END_IF
+IF gvl.gvl_b_emer_stop THEN
+b_quick_cleaning_unit_off:= TRUE;
+b_quick_cleaning_unit_on:= FALSE;
+b_cleaning_active:= FALSE;
+END_IF
+IF gvl.gvl_b_process_reset AND NOT gvl.gvl_b_emer_stop THEN
+b_quick_cleaning_unit_off:= FALSE;
+b_quick_cleaning_unit_on:= TRUE;
+b_cleaning_active:= TRUE;
+i_current_stage:= 6;
+s_current_phase:= 'Quick cleaning';
+END_IF
+
+
+
+//Full cleaning phase
+7:
+s_current_phase:= 'End of day full unit cleaning';
+b_cleaning_active:= TRUE;
+b_cycle_active:= FALSE;
+r_milk_currentcow:= 0.0;
+t_milking_timeout_offset:= T#0S;
+r_milk_flowrate:= r_milk_initial_flowrate;
+b_vacuum_pump_off:= TRUE;
+b_vacuum_pump_on:= FALSE;
+b_vacuum_pump_ready:= FALSE;
+b_milking_unit_retracted:= TRUE;
+b_milking_unit_extended:= FALSE;
+b_milk_extraction:= FALSE;
+b_vacuum_pump_ready:= FALSE;
+b_full_cleaning_unit_on:= TRUE;
+b_full_cleaning_unit_off:= FALSE;
+tmr_full_clean(in:=  b_full_cleaning_unit_on AND NOT b_quick_cleaning_unit_on AND NOT b_fullclean_timeout_reset AND NOT b_fullclean_timeout_alarm AND NOT gvl.gvl_b_process_reset AND NOT gvl.gvl_b_emer_stop, pt:= T#40S);
+t_full_clean_elapsed:= tmr_full_clean.PT - tmr_full_clean.ET;
+IF tmr_full_clean.q THEN
+i_current_stage:= 0;
+b_cleaning_active:= FALSE;
+b_full_cleaning_unit_on:= FALSE;
+b_full_cleaning_unit_off:= TRUE;
+r_vacuum_pressure_actual:= 0.0;
+r_milk_in_tank:= 0.0;
+t_vacuum_timeout:= T#0S;  
+FOR i_cow_index := 0 TO i_cow_day_count BY 1 DO
+arr_cowinfo[i_cow_index].r_cow_milkcollected:= 0.0;
+arr_cowinfo[i_cow_index].i_current_cow_number:= 0;
+END_FOR
+i_cow_day_count:= 0;
+i_cow_index:= 0;
+i_current_cow_num:= 0;
+fb_endofdayinfo_message.send(0);
+END_IF
+IF tmr_full_clean.et >= t_full_cleaning_maxtime THEN
+b_full_cleaning_unit_on:= FALSE;
+b_full_cleaning_unit_off:= TRUE;
+b_cleaning_active:= FALSE;
+fb_notsoseriousalarmfc_message.send(0);
+b_fullclean_timeout_alarm:= TRUE;
+
+END_IF
+IF b_fullclean_timeout_reset THEN
+b_full_cleaning_unit_on:= TRUE;
+b_full_cleaning_unit_off:= FALSE;
+b_cleaning_active:= TRUE;
+b_fullclean_timeout_alarm:= FALSE;
+i_current_stage:= 7;
+END_IF
+IF gvl.gvl_b_emer_stop THEN
+b_full_cleaning_unit_on:= FALSE;
+b_full_cleaning_unit_off:= TRUE;
+b_cleaning_active:= FALSE;
+END_IF
+IF gvl.gvl_b_process_reset AND NOT gvl.gvl_b_emer_stop THEN
+b_full_cleaning_unit_on:= TRUE;
+b_full_cleaning_unit_off:= FALSE;
+b_cleaning_active:= TRUE;
+i_current_stage:= 7;
+s_current_phase:= 'End of day full unit cleaning';
+END_IF
+
+END_CASE
+END_IF 
